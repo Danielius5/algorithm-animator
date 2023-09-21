@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <style>
+            svg {
+                max-width: 200px !important;
+            }
+        </style>
+    </head>
+  <body>
+    <textarea id="userinput" rows="20">
+---
+title: Graph
+---
+stateDiagram-v2
+    [*] --> S1
+
+    S1 --> S2: A
+    S1 --> S3: B
+    S2 --> S4: A
+    S3 --> S4: B
+    S2 --> S3: B
+    S3 --> S2: A
+    S4 --> S4: A, B
+    S4::: finalState
+    classDef finalState fill:#009,color:white,font-weight:bold
+
+
+
+    </textarea>
+
+    <pre class="mermaid" id="canvas">
+        ---
+        title: Graph
+        ---
+        stateDiagram-v2
+            [*] --> S1
+        
+            S1 --> S2: A
+            S1 --> S3: B
+            S2 --> S4: A
+            S3 --> S4: B
+            S2 --> S3: B
+            S3 --> S2: A
+            S4 --> S4: A, B
+            S4::: finalState
+            classDef finalState fill:#009,color:white,font-weight:bold
+    </pre>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true});        
+        document.getElementById("userinput").addEventListener("input", async () => {
+            const code =  document.getElementById("userinput").value.trim();
+            const output = document.getElementById("canvas")
+
+            const {svg } = await mermaid.render("graphDiv", code);
+            output.innerHTML = svg;
+        });
+    </script>
+
+  </body>
+</html>
