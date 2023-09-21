@@ -21,3 +21,4 @@
 ### 21 Sep 2023
 
 * *1.0 hour* Read Algorithmics 1 slides and other online materials about DFA's and redo exercises from Algorithmics 1
+* *3.0 hours* Experimented building a static DFA using Cytoscape JS.
