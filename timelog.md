@@ -25,3 +25,5 @@
 * *1.0 hours* Experimented building a static DFA using Sigma.js
 * *0.5 hours* Experimented building a static DFA using React Flow
 * *1.0 hours* Experimented building a static DFA using Mermaid JS
+* *0.5 hours* Added Mermaid JS to a new React project
+* *2.5 hours* Read about converting regular expressions to DFA and started trying to implement an algorithm to build a syntax tree out of regex

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactFlow from 'reactflow';
 import { SmartBezierEdge } from '@tisoap/react-flow-smart-edge'
 
