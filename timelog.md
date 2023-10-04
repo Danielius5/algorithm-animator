@@ -28,3 +28,5 @@
 * *0.5 hours* Added Mermaid JS to a new React project
 * *2.5 hours* Read about converting regular expressions to DFA and started trying to implement an algorithm to build a syntax tree out of regex
 * *1.0 hours* Wrote weekly report
+### 4 Oct 2023
+* *1.0 hour* Try to do first  steps on converting regex to syntax tree

@@ -1,7 +1,5 @@
 import { Tree } from "@/models/tree"
-// (a|b)*aa
-// (a|b)*a.a
-// (a|b)*.a.a
+
 let alphanumerics = new Set()
 alphanumerics.add("a")
 alphanumerics.add("b")
@@ -12,7 +10,7 @@ export function prepareExp(exp:string) {
         return ""
     }
 
-    exp = exp += "#"
+    exp = exp + "#"
 
     let resultant_exp = ""
     for(let i = 0; i < exp.length; i++) {
@@ -36,6 +34,26 @@ export function prepareExp(exp:string) {
         }
     }
     return resultant_exp
+}
+export function expWithinParenthesis(exp: string) {
+    if (exp[0] != "(") {
+        throw new Error("failed to parse regex")
+    }
+    let pos = 1;
+    let sum = 1;
+
+    for (let i = pos; i < exp.length; i++) {
+        if (exp[i] == ")") sum -=1;
+        if (exp[i] == "(") sum +=1;
+        if (sum == 0) {
+            pos = i;
+            break;
+        }
+    }
+    if (sum != 0) {
+        throw new Error("failed to parse regex")
+    }
+    return [exp.substring(1,pos), exp.substring(pos + 1)]
 }
 export function buildSyntaxTree(exp: string)  {
     let tree: Tree = {value: "1"}
