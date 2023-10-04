@@ -1,29 +1,18 @@
 "use client"
+import { GraphBuildForm } from '@/components/GraphBuildForm'
+import { GraphFromDFA } from '@/components/GraphFromDFA'
+import { DFABuilder } from '@/helpers/dfa_builder'
+import { DFA } from '@/models/dfa'
 import mermaid from 'mermaid'
 import { useEffect, useState } from 'react'
 
 mermaid.initialize({ startOnLoad: true})
 
-interface MermaidParams {
-  graph: string
-}
-function Mermaid({graph}: MermaidParams) {
-  const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    mermaid.contentLoaded()
-    setLoaded(true)
-  }, [])
-
-  return (
-
-  <pre className={`mermaid ${!loaded ? "invisible" : ""}`} style={{width: "600px", height:"500px"}}>
-    {graph}
-  </pre>
-)
-}
-
 export default function Home() {
+  const [isClient, setIsClient] = useState(false)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
   let graph = `
   ---
   title: Graph
@@ -60,8 +49,10 @@ export default function Home() {
           `
   return (
     <>
-      <Mermaid graph={graph}></Mermaid>
-      <Mermaid graph={graph2}></Mermaid>
+    {isClient && <GraphBuildForm /> }
+    
+      {/* <Mermaid graph={graph}></Mermaid> */}
+      {/* <Mermaid graph={graph2}></Mermaid> */}
     </>
   )
 }
