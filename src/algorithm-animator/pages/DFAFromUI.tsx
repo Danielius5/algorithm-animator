@@ -1,8 +1,10 @@
 import { DFABuilder } from "@/helpers/dfa_builder";
 import { useRef, useState } from "react";
-import { GraphFromDFA } from "./GraphFromDFA";
+import { GraphFromDFA } from "../components/GraphFromDFA";
+import { GraphAnimator } from "../components/GraphAnimator";
+import { Trace } from "../components/Trace";
 
-export function GraphBuildForm () {
+export function DFAFromUI () {
     const [stateName, setStateName] = useState<string>("");
     const [isAcceptedState, setIsAcceptedState] = useState<boolean>(false);
 
@@ -13,6 +15,9 @@ export function GraphBuildForm () {
 
     const [states, setStates] = useState<string[]>(["S1"])
     const [edges, setEdges] = useState<[string, string, string][]>([])
+
+    const [currentLetter, setCurrentLetter] = useState<number>(0)
+    const [currentState, setCurrentState] = useState<string>("In Progress")
 
     const dfaBuilder = useRef<DFABuilder>(new DFABuilder())
 
@@ -68,7 +73,11 @@ export function GraphBuildForm () {
                 })}
             </div>
             <div className="grid-item">
-                <GraphFromDFA states={dfaBuilder.current.states} />
+                <Trace text="aab" current={currentLetter} log={[]} state={currentState}/>
+            </div>
+            <div className="grid-item">
+                {/* <GraphFromDFA states={dfaBuilder.current.states} /> */}
+                <GraphAnimator states={dfaBuilder.current.states} text="aab" setCurrentLetter={setCurrentLetter} setCurrentState={setCurrentState}/>
             </div>
         </div>
     )

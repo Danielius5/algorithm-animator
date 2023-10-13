@@ -11,3 +11,6 @@ html, body {
     flex: 50%;
     margin: auto; 
 }
+.current-letter {
+    font-weight: bold;
+}
