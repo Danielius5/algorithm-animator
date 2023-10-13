@@ -2,6 +2,7 @@
 import { GraphFromDFA } from '@/components/GraphFromDFA'
 import { DFABuilder } from '@/helpers/dfa_builder'
 import { DFA } from '@/models/dfa'
+import { DFAFromRegex } from '@/pages/DFAFromRegex'
 import { DFAFromUI } from '@/pages/DFAFromUI'
 import mermaid from 'mermaid'
 import { useEffect, useState } from 'react'
@@ -49,8 +50,8 @@ export default function Home() {
           `
   return (
     <>
-    {isClient && <DFAFromUI /> }
-    
+    {/* {isClient && <DFAFromUI /> } */}
+    {isClient && <DFAFromRegex /> }
       {/* <Mermaid graph={graph}></Mermaid> */}
       {/* <Mermaid graph={graph2}></Mermaid> */}
     </>
