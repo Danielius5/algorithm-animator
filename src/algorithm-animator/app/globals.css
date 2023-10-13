@@ -1,0 +1,13 @@
+html, body {
+    height:100%;
+}
+.grid-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height:100%;
+}
+.grid-item {
+    flex: 50%;
+    margin: auto; 
+}

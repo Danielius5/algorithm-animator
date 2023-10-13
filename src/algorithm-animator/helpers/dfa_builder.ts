@@ -3,22 +3,22 @@ import { DFA, State, Transition } from "@/models/dfa";
 export class DFABuilder {
     stateValues: Set<string> 
     states: State[]
+    highestState: number
     baseState: State
     constructor() {
         const baseStateName = "S1"
         this.baseState = {value:baseStateName, transitions: [], isAccepted: false, }
         this.stateValues = new Set([baseStateName])
-
+        this.highestState = 1;
 
         this.states = [this.baseState];
     }
 
-    addState(value: string, isAccepted: boolean) {
-        if(this.stateValues.has(value)) {
-            throw Error("State with this name already exists!")
-        }
+    addState(isAccepted: boolean) {
+        const value = `S${++this.highestState}`;
         this.stateValues.add(value);
         this.states.push({value: value, isAccepted: isAccepted, transitions: []})
+        return value
     }
 
     addEdge(from: string, to: string, characterMatched: string) {

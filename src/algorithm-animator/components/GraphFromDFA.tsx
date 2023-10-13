@@ -18,7 +18,7 @@ function Mermaid({graph}: MermaidParams) {
   
     return (
   
-    <pre className={`mermaid ${!loaded ? "invisible" : ""}`} style={{width: "150px"}}>
+    <pre className={`mermaid ${!loaded ? "invisible" : ""}`} style={{width: "100%"}}>
       {graph}
     </pre>
   )
