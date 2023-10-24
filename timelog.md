@@ -37,3 +37,6 @@
 * *1.0 hour* Change styles to flexbox, get rid of input for state name 
 * *5.0 hours* Made it possible to build graph from UI and animate in a basic way (emphasising states and transitions) as well as showed whether the hardcoded text was accepted or rejected
 * *3.0 hours* Started working on converting regex to ∈-NFA. Basic regex (no parentheses, "or" with only one char) can be converted to NFA.
+
+### 24 Oct 2023
+* *15.0 hours* Past weeks worked on converting regex to ∈-NFA. Unfortunately I did not commit as the solution was always half-working. Now it seems reasonably well-behaved and I want this state as backup.

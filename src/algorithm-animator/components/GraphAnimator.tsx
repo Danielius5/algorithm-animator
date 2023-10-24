@@ -53,8 +53,8 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState}:
 
     if (currentStep == steps.length) {
         const finalStep = steps[currentStep - 1];
-        // @ts-ignore
-        console.log(finalStep.isAccepted);
+        // // @ts-ignore
+        // console.log(finalStep.isAccepted);
         // @ts-ignore
         if(finalStep.isAccepted){
             setCurrentState("Accepted")

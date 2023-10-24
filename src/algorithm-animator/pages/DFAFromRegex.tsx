@@ -1,5 +1,5 @@
-import { DFABuildAnimator } from "@/components/DFABuildAnimator";
+import { ENFABuildAnimator } from "@/components/DFABuildAnimator";
 
 export function DFAFromRegex () {
-    return <DFABuildAnimator regex="a|b" />
-}
+    return <ENFABuildAnimator regex="aa*bb*" />
+} 
