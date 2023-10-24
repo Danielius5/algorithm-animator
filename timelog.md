@@ -41,3 +41,4 @@
 ### 24 Oct 2023
 * *15.0 hours* Past weeks worked on converting regex to ∈-NFA. Unfortunately I did not commit as the solution was always half-working. Now it seems reasonably well-behaved and I want this state as backup.
 * *3.0 hours* Looked at algorithm to convert ∈-NFA to DFA as well as tried to improve animation (work in progress)
+* *1.0 hours* Implemented ∈-NFA transition table

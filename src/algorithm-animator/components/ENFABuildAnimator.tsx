@@ -3,11 +3,13 @@ import { State } from "@/models/dfa";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { GraphFromDFA } from "./GraphFromDFA";
 
-const EMPTY = "£"
+export const EMPTY = "ε"
 interface DFABuildAnimatorParams {
     regex: string;
     states: State[];
     setStates: Dispatch<SetStateAction<State[]>>
+    NFAComplete: boolean;
+    setNFAComplete: Dispatch<SetStateAction<boolean>>
 }
 type Step = (dfaBuilder: DFABuilder, parent: string, a: (Steps | string), b: (Steps | string)) => string
 type Steps = [Step, Steps | string, Steps | string][];
@@ -151,7 +153,7 @@ function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
 //     steps.push([step, lastA, lastB])
 //     return steps
 // }
-export function ENFABuildAnimator({regex, states, setStates}:DFABuildAnimatorParams) {
+export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFABuildAnimatorParams) {
     let s: Steps = []
     getSteps(regex, s, true)
     console.log(s)
@@ -171,6 +173,9 @@ export function ENFABuildAnimator({regex, states, setStates}:DFABuildAnimatorPar
             parent = newParent
         }
         setStates(dfaBuilder.states)
+        if (currentStep == steps.length) {
+            setNFAComplete(true)
+        }
     }, [steps, currentStep])
     
     return (

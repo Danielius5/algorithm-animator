@@ -14,3 +14,8 @@ html, body {
 .current-letter {
     font-weight: bold;
 }
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
