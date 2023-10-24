@@ -1,11 +1,13 @@
 import { DFABuilder } from "@/helpers/dfa_builder";
 import { State } from "@/models/dfa";
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { GraphFromDFA } from "./GraphFromDFA";
 
 const EMPTY = "£"
 interface DFABuildAnimatorParams {
     regex: string;
+    states: State[];
+    setStates: Dispatch<SetStateAction<State[]>>
 }
 type Step = (dfaBuilder: DFABuilder, parent: string, a: (Steps | string), b: (Steps | string)) => string
 type Steps = [Step, Steps | string, Steps | string][];
@@ -118,23 +120,63 @@ function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
         steps.push([addFinish, regex[len - 1], ""])
     }
 }
-export function ENFABuildAnimator({regex}:DFABuildAnimatorParams) {
+// function traverseSteps(step: Step, parent: string, a:Steps | string, b: Steps | string){
+//     let steps: Steps = []
+//     let lastA: Step | undefined = undefined;
+//     let lastB: Step | undefined = undefined;
+//     if (typeof a !== "string") {
+//         for (const [step, aSub, bSub] of a) {
+//             const res = traverseSteps(step, aSub, bSub);
+//             // safe to ignore as recursion must have final element as string
+//             //@ts-ignore
+//             lastA = res[res.length - 1][1]
+//             steps.push(...res.slice(0, -1))
+//         }
+//     } else {
+//         const st: Step = [addConcat, a, b]; 
+//         lastA = [addConcat, a, b];
+//     }
+//     if (typeof b !== "string") {
+//         for (const [step, aSub, bSub] of b) {
+//             const res = traverseSteps(step, aSub, bSub);
+//             // safe to ignore as recursion must have final element as string
+//             //@ts-ignore
+//             lastB = res[res.length - 1][2]
+//             steps.push(...res.slice(0, -1))
+//         }
+//     } else {
+//         lastB = b;
+//     }
+//     //@ts-ignore
+//     steps.push([step, lastA, lastB])
+//     return steps
+// }
+export function ENFABuildAnimator({regex, states, setStates}:DFABuildAnimatorParams) {
+    let s: Steps = []
+    getSteps(regex, s, true)
+    console.log(s)
+    const [steps, setSteps] = useState<Steps>(s)
     const [currentStep, setCurrentStep] = useState<number>(0)
-    const dfaBuilder = new DFABuilder()
-
-    let steps: Steps = [];
-    getSteps(regex, steps, true)
-    // console.log(steps)
-    let parent = dfaBuilder.states[0].value
-    for(const [func, char, char2] of steps) {
-        // console.log(char, parent)
-        const newParent = func(dfaBuilder, parent, char, char2)
-        parent = newParent
-    }
+    useEffect(() => {
+        const dfaBuilder = new DFABuilder()
+        let parent = dfaBuilder.states[0].value
+        const stepsUntilCurrent = steps.slice(0, currentStep)
+        // const s: Steps = []
+        // for(const [step, aSub, bSub] of stepsUntilCurrent) {
+        //     s.push(...traverseSteps(step, aSub, bSub))
+        // }
+        for(const [func, char, char2] of stepsUntilCurrent) {
+            // console.log(char, parent)
+            const newParent = func(dfaBuilder, parent, char, char2)
+            parent = newParent
+        }
+        setStates(dfaBuilder.states)
+    }, [steps, currentStep])
+    
     return (
         <>
-            {/* <input type="button" onClick={() => setCurrentStep(Math.min(currentStep + 1, steps.length))}  value="Next" /> */}
-            <GraphFromDFA states={dfaBuilder.states} />
+            <input type="button" onClick={() => setCurrentStep(Math.min(currentStep + 1, steps.length))}  value="Next" />
+            <GraphFromDFA states={states} />
         </>
     )
 }
