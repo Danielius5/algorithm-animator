@@ -1,12 +1,11 @@
 import { State } from "@/models/dfa";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { EMPTY } from "./ENFABuildAnimator";
 
 interface ENFAToDFAAnimatorParams {
     NFAstates: State[];
-    DFAstates: State[];
-    setDFAStates: Dispatch<SetStateAction<State[]>>
-    setDFAComplete: Dispatch<SetStateAction<boolean>>
+    NFATransitionTable: Set<string>[][];
+    setNFATransitionTable: Dispatch<SetStateAction<Set<string>[][]>>
     language: string[]
 }
 
@@ -27,16 +26,16 @@ function findAllReachableByChar(state: State, char: string, visited: Set<string>
     return set
 }
 function getInitialENFATransitionTable(language: string[], states: State[]){
-    let table = [["State", ...language.map((c) => c)]]
+    let table: Set<string>[][] = [[new Set(["State"]), ...language.map((c) => new Set(c))]]
     for(const state of states){
-        const row:string[] = [state.value]
+        const row:Set<string>[] = [new Set([state.value])]
         for (const char of language) {
             const visited = new Set<string>()
             const reachable = findAllReachableByChar(state, char, visited)
             if (char == EMPTY) reachable.add(state.value)
-            const res = Array.from(reachable).sort((a, b) => a.localeCompare(b));
+            // const res = Array.from(reachable).sort((a, b) => a.localeCompare(b));
 
-            row.push(res.join())
+            row.push(reachable)
         }
 
         table.push(row);
@@ -45,30 +44,32 @@ function getInitialENFATransitionTable(language: string[], states: State[]){
     
     return table
 }
-export function NFATransitionTable({NFAstates, DFAstates, setDFAStates, setDFAComplete, language}:ENFAToDFAAnimatorParams) {
-    // const visited:Set<string> = new Set();
-    // const language = Array.from(getLanguage(NFAstates[0], visited)).sort((a, b) => b.localeCompare(a));
+export function NFATransitionTable({NFAstates, language, NFATransitionTable, setNFATransitionTable}:ENFAToDFAAnimatorParams) {
     // TODO: do step by step?
-    const [NFATransitionTable, setNFATransitionTable] = useState<string[][]>(getInitialENFATransitionTable(language, NFAstates))
+    useEffect(() => {
+        setNFATransitionTable(getInitialENFATransitionTable(language, NFAstates))
+    }, [])
     return (
         <>
             <h3>ε-NFA transition table</h3>
-            <table>
-                <thead>
-                    <tr>
-                        {NFATransitionTable[0].map((character) => <th key={character}>{character}</th>)}
-                    </tr>
-                </thead>
-                <tbody>
-                    {NFATransitionTable.slice(1).map((row) => {
-                        return (
-                            <tr key={row.join("")}>
-                                {row.map((cell, index) => <td key={index}>{cell}</td>)}
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
+            {NFATransitionTable.length > 0 &&
+                <table>
+                    <thead>
+                        <tr>
+                            {NFATransitionTable[0].map((character) => <th key={[...character].join()}>{[...character].join()}</th>)}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {NFATransitionTable.slice(1).map((row, ind) => {
+                            return (
+                                <tr key={ind}>
+                                    {row.map((cell, index) => <td key={index}>{[...cell].sort((a,b) => a.localeCompare(b)).join()}</td>)}
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            }
         </>
     )
 }
