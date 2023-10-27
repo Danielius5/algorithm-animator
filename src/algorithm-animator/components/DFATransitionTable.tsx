@@ -76,7 +76,23 @@ export function DFATransitionTable({language: langWithEpsillon, NFATransitionTab
                         {DFATransitionTableState.slice(1).map((row, ind) => {
                             return (
                                 <tr key={ind}>
-                                    {row.map((cell, index) => <td key={index}>{[...cell].sort((a,b) => a.localeCompare(b)).join()}</td>)}
+                                    {row.map((cell, index) => {
+                                        return (
+                                            <>
+                                                {[...cell].length == 0 ? 
+                                                (
+                                                    <td key={index}>∅</td>
+                                                )
+                                                : 
+                                
+                                                (
+                                                    <td key={index}>
+                                                        {[...cell].sort((a,b) => a.localeCompare(b)).join()}
+                                                     </td>
+                                                )}
+                                            </>
+                                        )
+                                        })}
                                 </tr>
                             )
                         })}

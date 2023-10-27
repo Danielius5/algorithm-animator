@@ -43,3 +43,4 @@
 * *3.0 hours* Looked at algorithm to convert ∈-NFA to DFA as well as tried to improve animation (work in progress)
 * *1.0 hours* Implemented ∈-NFA transition table
 * *5.0 hours* Implemented DFA transition table and built DFA
+* *0.5 hours* Added empty set symbol
