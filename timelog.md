@@ -44,3 +44,6 @@
 * *1.0 hours* Implemented ∈-NFA transition table
 * *5.0 hours* Implemented DFA transition table and built DFA
 * *0.5 hours* Added empty set symbol
+
+### 9 Nov 2023
+* *1.5 hours* Corrected bug of multiple branches with the same characted for failing state for "ab*"

@@ -28,7 +28,9 @@ function findState(a: Set<string>, states: Set<string>[]) {
     if (foundInd == -1) throw new Error("Error")
     return foundInd
 }
-
+function isFailingState(state: Set<string>) {
+    return [...state].length == 0
+}
 const INF = 100000;
 function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], language: string[], finalState: string) {
     const baseState = DFATransitionTable[1][0]
@@ -37,7 +39,8 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
     let transitions:[string, number, number][] = []
 
     let table = DFATransitionTable.slice(1)
-    table = table.filter((row) => [...row[0]].length > 0)
+    table = table.filter((row) => !isFailingState(row[0]))
+
     table.forEach((row, rowInd) => { //row[ind] = states[ind]
 
         row.forEach((cell, ind) => { 
@@ -50,15 +53,9 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
                     isFinalState.push(cell.has(finalState))
                 }
             }
-            console.log(cell, ind)
-            if ([...cell].length == 0) {
-                // connect to failing state for empty set
-                if([...DFATransitionTable[rowInd][0]].length == 0) {
-                    transitions.push([language[ind - 1], INF, INF])
-                }
-                else {
-                    transitions.push([language[ind - 1], rowInd, INF])
-                }
+
+            if (isFailingState(cell)) {
+                transitions.push([language[ind - 1], rowInd, INF])
             }
             else {
                 transitions.push([language[ind - 1], rowInd, findState(cell, states)])
@@ -76,6 +73,9 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
         toInd = Math.min(toInd + 2, states.length + 2)
         fromInd = Math.min(fromInd + 2, states.length + 2)
         dfaBuilder.addEdge(`S${fromInd}`, `S${toInd}`, char)
+    })
+    language.forEach((character,) => {
+        dfaBuilder.addEdge(`S${states.length + 2}`, `S${states.length + 2}`, character)
     })
     dfaBuilder.addEdge("S1", "S2", EMPTY)
 }
