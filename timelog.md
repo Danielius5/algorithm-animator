@@ -51,3 +51,4 @@
 ### 10 Nov 2023
 * *3 hours* Fixed priority of operations, fixed a bug where ac|ab* worker where ab*|ac did not]
 * *2 hours* Connected basic UI with animation
+* *2 hours* Improved animation of text going through DFA

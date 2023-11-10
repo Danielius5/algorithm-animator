@@ -27,7 +27,7 @@ export function Trace({text, current, log, state} : TraceParams) {
         <>
             <br/>
             Text:
-            {letters.map(([letter, isCurrent]) => <span className={isCurrent ? "current-letter" : ""} key={letter + isCurrent}>{letter}</span>
+            {letters.map(([letter, isCurrent], i) => <span className={isCurrent ? "current-letter" : ""} key={letter + isCurrent + i}>{letter}</span>
             )}
             <br/>
             Result: {state}

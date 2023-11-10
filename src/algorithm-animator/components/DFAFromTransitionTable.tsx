@@ -1,10 +1,13 @@
 import { DFABuilder } from "@/helpers/dfa_builder";
 import { EMPTY } from "./ENFABuildAnimator";
 import { GraphFromDFA } from "./GraphFromDFA";
+import { Dispatch, SetStateAction } from "react";
+import { State } from "@/models/dfa";
 
 interface DFAFromTransitionTableParams {
     DFATransitionTable: Set<string>[][];
     NFATransitionTable: Set<string>[][];
+    dfaBuilder: DFABuilder;
     language: string[]
 }
 
@@ -78,7 +81,7 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
     })
     dfaBuilder.addEdge("S1", "S2", EMPTY)
 }
-export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitionTable, NFATransitionTable}: DFAFromTransitionTableParams) {
+export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitionTable, NFATransitionTable, dfaBuilder:a}: DFAFromTransitionTableParams) {
     if (DFATransitionTable[1] === undefined) {
         return
     }
@@ -86,6 +89,7 @@ export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitio
     const dfaBuilder = new DFABuilder()
     const finalState = [...NFATransitionTable[NFATransitionTable.length - 1][0]][0]
     buildDFA(dfaBuilder, DFATransitionTable, language, finalState)
+    // setDFAStates(dfaBuilder.states)
     return (
         <GraphFromDFA states={dfaBuilder.states} />
     )

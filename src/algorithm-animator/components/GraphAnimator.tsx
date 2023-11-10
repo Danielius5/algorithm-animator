@@ -6,8 +6,10 @@ interface GraphAnimatorParams {
     states: State[]
     text?: string;
     currentLetter: number;
+    currentStep: number;
     setCurrentLetter: Dispatch<SetStateAction<number>>
     setCurrentState: Dispatch<SetStateAction<string>>
+    setCurrentStep: Dispatch<SetStateAction<number>>
   }
 
 function recursiveBuildSteps(state: State, text: string, steps: Step[]) {
@@ -41,43 +43,49 @@ function setActiveStep(state: State, step: Step, visited: Set<Step>) {
         setActiveStep(transition.stateTo, step, visited)
     }
 }
-export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, currentLetter}:GraphAnimatorParams) {
-    const [currentStep, setCurrentStep] = useState<number>(0)
-    const [goForward, setGoForward] = useState<boolean>(true);
-
+export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, currentLetter, currentStep, setCurrentStep}:GraphAnimatorParams) {
+    
+    const [goForward, setGoForward] = useState<boolean | undefined >(undefined);
     let steps: Step[] = []
     let visited: Set<Step> = new Set()
-
     useEffect(() => {
-        //@ts-ignore
-        if (steps[currentStep].characterMatched && text) {
-            if(goForward) {
-                setCurrentLetter(Math.min(currentLetter + 1, text.length));
-            } else {
-                setCurrentLetter(Math.max(currentLetter - 1, 0));
+        setGoForward(undefined);
+    })
+    useEffect(() => {
+        let nextLetterState = 0.5;
+        if (text) {
+            if(goForward === true) {
+                nextLetterState =Math.min(currentLetter + 0.5, text.length + 0.5);
+            } else if(goForward === false) {
+                nextLetterState = Math.max(currentLetter - 0.5, 0.5);
             }
         }
+        if (currentStep == steps.length - 1) {
+            const finalStep = steps[currentStep];
+            // @ts-ignore
+            if(finalStep.isAccepted && Math.floor(nextLetterState) == text.length){
+                setCurrentState("Accepted")
+            }
+            else {setCurrentState("Rejected")}
+            // if (typeof finalStep === "State")
+        }
+        else {
+            setCurrentState("In Progress")
+        }
+        setCurrentLetter(nextLetterState);
     }, [currentStep]);
     
     if (text) {
         steps = getSteps(states, text);
+        console.log(steps)
+        if (steps.length == 1) {
+            //@ts-ignore
+            setCurrentState("Rejected")
+        }
     }
     setActiveStep(states[0], steps[currentStep], visited);
     
 
-    if (currentStep == steps.length - 1) {
-        const finalStep = steps[currentStep];
-        // // @ts-ignore
-        // @ts-ignore
-        if(finalStep.isAccepted){
-            setCurrentState("Accepted")
-        }
-        else {setCurrentState("Rejected")}
-        // if (typeof finalStep === "State")
-    }
-    else {
-        setCurrentState("In Progress")
-    }
     return (
         <div>
             <GraphFromDFA states={states} />
