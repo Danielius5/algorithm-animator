@@ -91,8 +91,40 @@ function appendCurSteps(regex: string, i: number, len: number, steps: Steps) {
     }
 
 }
+function checkForCurrentLevelOr(regex:string) {
+    let par = 0
+    for(let i = 0; i < regex.length; i++) {
+        const cur = regex[i];
+        if (cur == "(") par += 1
+        if (cur == ")") par -= 1
+
+        if (cur == "|" && par === 0) {
+            return i
+        }
+    }
+    return -1
+}
+// FIXME (ab*)|ac
 function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
     const len = regex.length
+    const orIndex = checkForCurrentLevelOr(regex)
+    if (orIndex !== -1) {
+        let curStepsA: Steps = []
+        let curStepsB: Steps = []
+
+        let regexA = regex.substring(0,orIndex)
+        let regexB = regex.substring(orIndex + 1)
+        getSteps(regexA, curStepsA, false)
+        getSteps(regexB, curStepsB, false)
+
+        steps.push([addOr, curStepsA, curStepsB])
+
+        if(createFinal) {
+            steps.push([addFinish, regex[len - 1], ""])
+        }
+
+        return
+    }
     for(let i = 0; i < len - 1;) {
         let curSteps: Steps = []
         let nextI = appendCurSteps(regex, i, len, curSteps)
@@ -107,12 +139,8 @@ function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
             nextI++;
         }
         else if(next == "|") {
-            let curStepsB: Steps = []
-            nextI = appendCurSteps(regex, nextI + 1, len, curStepsB)
-            steps.push([addOr, curSteps, curStepsB])
-            nextI += 2;
+            throw new Error("error")
         }
-        console.log(nextI, i)
         i = nextI
     }
     if (regex[len - 1] != "*" && regex[len - 2] != "|" && regex[len - 1] != ")") {
@@ -156,7 +184,6 @@ function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
 export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFABuildAnimatorParams) {
     let s: Steps = []
     getSteps(regex, s, true)
-    console.log(s)
     const [steps, setSteps] = useState<Steps>(s)
     const [currentStep, setCurrentStep] = useState<number>(0)
     useEffect(() => {
@@ -168,7 +195,6 @@ export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFA
         //     s.push(...traverseSteps(step, aSub, bSub))
         // }
         for(const [func, char, char2] of stepsUntilCurrent) {
-            // console.log(char, parent)
             const newParent = func(dfaBuilder, parent, char, char2)
             parent = newParent
         }

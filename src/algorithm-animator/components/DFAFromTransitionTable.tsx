@@ -62,7 +62,6 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
             }
         })
     })
-    console.log(transitions, states)
 
     states.forEach((state, ind) => {
         dfaBuilder.addState(isFinalState[ind])

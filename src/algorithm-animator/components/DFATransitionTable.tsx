@@ -42,7 +42,7 @@ function getInitialDFATransitionTable(language: string[], NFATransitionTable: Se
             }
             for (const s of characterSet) {
                 let sRow = parseInt(s.substring(1))
-                result = new Set([...characterSet, ...NFATransitionTable[sRow][eClosureColumn]])
+                result = new Set([...result, ...characterSet, ...NFATransitionTable[sRow][eClosureColumn]])
             }
             row.push(result)
             if(!isExistingState(result, dfaStates)) {
