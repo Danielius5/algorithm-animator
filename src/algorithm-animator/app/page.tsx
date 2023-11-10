@@ -1,11 +1,11 @@
 "use client"
-import { GraphFromDFA } from '@/components/GraphFromDFA'
-import { DFABuilder } from '@/helpers/dfa_builder'
-import { DFA } from '@/models/dfa'
-import { DFAFromRegex } from '@/pages/DFAFromRegex'
-import { DFAFromUI } from '@/pages/DFAFromUI'
+import DFAFromRegex from '@/pages/dfa-from-regex'
 import mermaid from 'mermaid'
+import React from 'react';
 import { useEffect, useState } from 'react'
+
+import ReactDOM, { createRoot } from 'react-dom/client';
+import { BrowserRouter, Link, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 mermaid.initialize({ startOnLoad: true})
 

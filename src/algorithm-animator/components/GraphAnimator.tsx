@@ -1,10 +1,11 @@
 import { State, Step, instanceOfState } from "@/models/dfa";
 import { GraphFromDFA } from "./GraphFromDFA";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface GraphAnimatorParams {
     states: State[]
     text?: string;
+    currentLetter: number;
     setCurrentLetter: Dispatch<SetStateAction<number>>
     setCurrentState: Dispatch<SetStateAction<string>>
   }
@@ -40,19 +41,32 @@ function setActiveStep(state: State, step: Step, visited: Set<Step>) {
         setActiveStep(transition.stateTo, step, visited)
     }
 }
-export function GraphAnimator({states, text, setCurrentLetter, setCurrentState}:GraphAnimatorParams) {
+export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, currentLetter}:GraphAnimatorParams) {
     const [currentStep, setCurrentStep] = useState<number>(0)
+    const [goForward, setGoForward] = useState<boolean>(true);
 
     let steps: Step[] = []
     let visited: Set<Step> = new Set()
+
+    useEffect(() => {
+        //@ts-ignore
+        if (steps[currentStep].characterMatched && text) {
+            if(goForward) {
+                setCurrentLetter(Math.min(currentLetter + 1, text.length));
+            } else {
+                setCurrentLetter(Math.max(currentLetter - 1, 0));
+            }
+        }
+    }, [currentStep]);
+    
     if (text) {
         steps = getSteps(states, text);
     }
     setActiveStep(states[0], steps[currentStep], visited);
-    setCurrentLetter(Math.max(currentStep - 1 - visited.keys.length,0));
+    
 
-    if (currentStep == steps.length) {
-        const finalStep = steps[currentStep - 1];
+    if (currentStep == steps.length - 1) {
+        const finalStep = steps[currentStep];
         // // @ts-ignore
         // @ts-ignore
         if(finalStep.isAccepted){
@@ -67,8 +81,9 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState}:
     return (
         <div>
             <GraphFromDFA states={states} />
-            <input type="button" onClick={() => setCurrentStep(Math.min(currentStep + 1, steps.length))}  value="Next" />
-            <input type="button" onClick={() => setCurrentStep(Math.max(currentStep - 1, 0))}  value="Back" />
+            <input type="button" onClick={() => {setCurrentStep(Math.min(currentStep + 1, steps.length - 1)); setGoForward(true)}}  value="Next" />
+            <input type="button" onClick={() => {setCurrentStep(Math.max(currentStep - 1, 0)); setGoForward(false)}}  value="Back" />
+
         </div>
     )
 }

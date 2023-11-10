@@ -3,7 +3,9 @@ import { DFATransitionTable } from "@/components/DFATransitionTable";
 import { ENFABuildAnimator } from "@/components/ENFABuildAnimator";
 import { NFATransitionTable } from "@/components/NFATransitionTable";
 import { State } from "@/models/dfa";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import '../app/globals.css'
 
 function getLanguage(state: State, visited: Set<string>) {
     let set: Set<string> = new Set()
@@ -21,7 +23,8 @@ function getLanguage(state: State, visited: Set<string>) {
     return set;
 }
 
-export function DFAFromRegex() {
+export default function DFAFromRegex() {
+    const router = useRouter()
 
     const [regex, setRegex] = useState<string>("")
     const [submit, setSubmit] = useState<boolean>(false)

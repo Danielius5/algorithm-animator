@@ -13,6 +13,7 @@ html, body {
 }
 .current-letter {
     font-weight: bold;
+    color:red;
 }
 
 table, th, td {

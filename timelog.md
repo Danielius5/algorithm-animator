@@ -49,4 +49,5 @@
 * *1.5 hours* Corrected bug of multiple branches with the same characted for failing state for "ab*"
 
 ### 10 Nov 2023
-* *3 hours* Fixed priority of operations, fixed a bug where ac|ab* worker where ab*|ac did not
+* *3 hours* Fixed priority of operations, fixed a bug where ac|ab* worker where ab*|ac did not]
+* *2 hours* Connected basic UI with animation

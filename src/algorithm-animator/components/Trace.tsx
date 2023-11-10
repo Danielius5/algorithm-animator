@@ -18,17 +18,19 @@ function buildText(text: string, current: number) {
 }
 export function Trace({text, current, log, state} : TraceParams) {
     let letters: [string, boolean][] = [];
-
+    const textWithEmpty = " " + text
     if (text) {
-        letters = buildText(text, current);
+        letters = buildText(textWithEmpty, current);
     }
+    console.log(letters)
     return (
         <>
-        Text: aab <br/>
-        {/* Word:<br/>
-        {letters.map(([letter, isCurrent]) => <span className={isCurrent ? "current-letter" : ""} key={letter + isCurrent}>{letter}</span>
-        )} */}
-        Result: {state}
+            <br/>
+            Text:
+            {letters.map(([letter, isCurrent]) => <span className={isCurrent ? "current-letter" : ""} key={letter + isCurrent}>{letter}</span>
+            )}
+            <br/>
+            Result: {state}
         </>
     );
 }
