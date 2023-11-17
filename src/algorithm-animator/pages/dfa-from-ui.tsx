@@ -5,6 +5,8 @@ import { GraphAnimator } from "../components/GraphAnimator";
 import { Trace } from "../components/Trace";
 import { useRouter } from "next/router";
 import { Animate } from "@/components/Animate";
+import { State } from "@/models/dfa";
+import { EMPTY } from "@/components/ENFABuildAnimator";
 
 export default function DFAFromUI () {
     const [isClient, setIsClient] = useState(false)
@@ -28,6 +30,7 @@ export default function DFAFromUI () {
     // const [currentLetter, setCurrentLetter] = useState<number>(0)
     // const [currentState, setCurrentState] = useState<string>("In Progress")
     
+    const [isValidDFA, setIsValidDFA] = useState<boolean | undefined>(undefined)
     const [animate, setAnimate] = useState<boolean>(false)
 
     const dfaBuilder = useRef<DFABuilder>(new DFABuilder())
@@ -49,6 +52,23 @@ export default function DFAFromUI () {
     function deleteEdge(from: string, to: string, characterMatched: string) {
         dfaBuilder.current.deleteEdge(from, to, characterMatched);
         setEdges(edges.filter(([eFrom, eTo, eCharacterMatched]) => from != eFrom || to != eTo || characterMatched != eCharacterMatched))
+    }
+
+    function checkIfValidDFA(states: State[]) {
+        for(let state of states) {
+            let transitionsByCharacter = new Set()
+            for (let tr of state.transitions) {
+                if (transitionsByCharacter.has(tr.characterMatched)){
+                    return false; // 2 transitions with same character - non deterministic
+                }
+                if (tr.characterMatched == EMPTY) {
+                    return false; // found an epsillon transition - non deterministic
+                }
+                transitionsByCharacter.add(tr.characterMatched)
+            }
+        }
+
+        return true;
     }
     return (
         <div>
@@ -86,14 +106,20 @@ export default function DFAFromUI () {
                                 return <div key={from + to + char}>{from} ---{'>'} {to}, {char} <a href="#" onClick={() => deleteEdge(from, to, char)}>delete</a></div>
                             })}
                         </div>
-                        {/* <div className="grid-item">
-                            <Trace text="aab" current={currentLetter} log={[]} state={currentState}/>
-                        </div> */}
+
                         <div>
                             <GraphFromDFA states={dfaBuilder.current.states} />
-                            {/* <GraphAnimator states={dfaBuilder.current.states} text="aab" setCurrentLetter={setCurrentLetter} setCurrentState={setCurrentState}/> */}
                         </div>
                         <input type="button" onClick={() => setAnimate(true)} value = "animate" />
+                        { isValidDFA == undefined ? (
+                            <input type="button" onClick={() => setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states))} value = "Check if valid DFA" />
+                            ) : (isValidDFA ? (
+                                <>Deterministic</>
+                            ) : (
+                                <>Non-deterministic</>
+                            ))
+                        }
+                        
                     </>
                 ) : (
                     <Animate states={dfaBuilder.current.states} goBack={() => setAnimate(false)}/>
