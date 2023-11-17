@@ -52,3 +52,6 @@
 * *3 hours* Fixed priority of operations, fixed a bug where ac|ab* worker where ab*|ac did not]
 * *2 hours* Connected basic UI with animation
 * *2 hours* Improved animation of text going through DFA
+
+### 17 Nov 2023
+* *4 hours* Allow animation from RegEx, fix bugs (aa* having disattached failing state, all DFA's having epsilon transition at the beginning, etc.)

@@ -28,6 +28,7 @@ function findAllReachableByChar(state: State, char: string, visited: Set<string>
 function getInitialENFATransitionTable(language: string[], states: State[]){
     let table: Set<string>[][] = [[new Set(["State"]), ...language.map((c) => new Set(c))]]
     for(const state of states){
+        // if (state.value === "Start") continue;
         const row:Set<string>[] = [new Set([state.value])]
         for (const char of language) {
             const visited = new Set<string>()

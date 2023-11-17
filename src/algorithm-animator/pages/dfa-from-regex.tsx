@@ -18,7 +18,9 @@ function getLanguage(state: State, visited: Set<string>) {
     visited.add(state.value)
 
     for(const t of state.transitions) {
-        set.add(t.characterMatched)
+        if (t.characterMatched) {
+            set.add(t.characterMatched)
+        }
         
         set = new Set<string>([...set, ...getLanguage(t.stateTo, visited)])
     }
@@ -55,11 +57,12 @@ export default function DFAFromRegex() {
         setNFAComplete(false)
         setNFATransitionTableState([])
         setDFATransitionTableState([])
+        setStatesDFA([])
         setSubmit(false)
     }
     return (
         <>
-        {!animate  || dfaBuilder.states.length == 0 ? (
+        {!animate ? (
             <>
                 <input onChange={(e) => {setRegex(e.target.value); unsubmit()}} value={regex}/>
                 <input type="button" onClick={() => setSubmit(true)} value="build dfa" />
@@ -75,7 +78,7 @@ export default function DFAFromRegex() {
                                     <>
                                         <DFATransitionTable language={language} NFATransitionTable={NFATransitionTableState} setDFATransitionTable={setDFATransitionTableState} DFATransitionTable={DFATransitionTableState}/>
                                         {DFATransitionTable.length > 0 && (
-                                            <DFAFromTransitionTable DFATransitionTable={DFATransitionTableState} NFATransitionTable={NFATransitionTableState} language={language} dfaBuilder={dfaBuilder} key={Math.random()}/>
+                                            <DFAFromTransitionTable DFATransitionTable={DFATransitionTableState} NFATransitionTable={NFATransitionTableState} language={language} setStates={setStatesDFA} states={statesDFA}/>
                                         )}
                                         <input type="button" onClick={() => setAnimate(true)} value = "animate" />
                                     </>
@@ -86,7 +89,7 @@ export default function DFAFromRegex() {
                 )}
             </>
         ) : (
-            <Animate states={dfaBuilder.states} goBack={() => setAnimate(false)}/>
+            <Animate states={statesDFA} goBack={() => setAnimate(false)}/>
         )}
         </>
     )

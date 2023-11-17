@@ -40,8 +40,12 @@ function recursiveAppendGraph(graph: string[], state: State, visited: Set<string
   visited.add(state.value)
 
   for (const transition of state.transitions) {
+    if (transition.characterMatched) {
+      graph.push(`\n  ${state.value} ${transition.active ? "==" : "--"} ${transition.characterMatched} ${transition.active ? "==>" : "-->"} ${transition.stateTo.value}`)
+    } else {
+      graph.push(`\n  ${state.value} ${transition.active ? "==>" : "-->"} ${transition.stateTo.value}`)
 
-    graph.push(`\n  ${state.value} ${transition.active ? "==" : "--"} ${transition.characterMatched} ${transition.active ? "==>" : "-->"} ${transition.stateTo.value}`)
+    }
     recursiveAppendGraph(graph, transition.stateTo, visited);
   }
 }
@@ -51,7 +55,7 @@ interface GraphFromDFAParams {
 }
 export function GraphFromDFA({states}:GraphFromDFAParams) {
     let visited = new Set<string>();
-    let graph = ["flowchart LR\n Start --> S1 \n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
+    let graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
     for(const state of states) {
       recursiveAppendGraph(graph, state, visited);
     }

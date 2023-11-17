@@ -1,5 +1,5 @@
 export interface Transition {
-    characterMatched: string;
+    characterMatched: string | undefined;
     stateTo: State
     active?: boolean;
 }

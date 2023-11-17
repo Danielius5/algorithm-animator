@@ -22,7 +22,7 @@ export default function DFAFromUI () {
     const [edgeTo, setEdgeTo] = useState<string>("");
     const [charToMatch, setCharToMatch] = useState<string>("");
 
-    const [states, setStates] = useState<string[]>(["S1"])
+    const [states, setStates] = useState<string[]>([])
     const [edges, setEdges] = useState<[string, string, string][]>([])
 
     // const [currentLetter, setCurrentLetter] = useState<number>(0)

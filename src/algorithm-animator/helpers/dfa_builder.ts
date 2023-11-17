@@ -4,14 +4,14 @@ export class DFABuilder {
     stateValues: Set<string> 
     states: State[]
     highestState: number
-    baseState: State
+    // baseState: State
     constructor() {
-        const baseStateName = "S1"
-        this.baseState = {value:baseStateName, transitions: [], isAccepted: false, }
-        this.stateValues = new Set([baseStateName])
-        this.highestState = 1;
+        // const baseStateName = "Start"
+        // this.baseState = {value:baseStateName, transitions: [], isAccepted: false, }
+        this.stateValues = new Set([])
+        this.highestState = 0;
 
-        this.states = [this.baseState];
+        this.states = [];
     }
 
     addState(isAccepted: boolean) {
@@ -21,7 +21,7 @@ export class DFABuilder {
         return value
     }
 
-    addEdge(from: string, to: string, characterMatched: string) {
+    addEdge(from: string, to: string, characterMatched: string | undefined) {
         const fromNode = this.states.find((value) => value.value == from);
         const toNode = this.states.find((value) => value.value == to);
         if (!fromNode || !toNode) {

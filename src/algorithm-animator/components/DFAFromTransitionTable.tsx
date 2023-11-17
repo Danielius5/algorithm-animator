@@ -1,13 +1,14 @@
 import { DFABuilder } from "@/helpers/dfa_builder";
 import { EMPTY } from "./ENFABuildAnimator";
 import { GraphFromDFA } from "./GraphFromDFA";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { State } from "@/models/dfa";
 
 interface DFAFromTransitionTableParams {
     DFATransitionTable: Set<string>[][];
     NFATransitionTable: Set<string>[][];
-    dfaBuilder: DFABuilder;
+    setStates: Dispatch<SetStateAction<State[]>>
+    states: State[]
     language: string[]
 }
 
@@ -44,6 +45,10 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
     let table = DFATransitionTable.slice(1)
     table = table.filter((row) => !isFailingState(row[0]))
 
+    // TODO: write about this
+    // eg: not reachable for aa* so not needed, but reachable for a|b
+
+    let failingStateReachable = false
     table.forEach((row, rowInd) => { //row[ind] = states[ind]
 
         row.forEach((cell, ind) => { 
@@ -58,6 +63,7 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
             }
 
             if (isFailingState(cell)) {
+                failingStateReachable = true
                 transitions.push([language[ind - 1], rowInd, INF])
             }
             else {
@@ -69,28 +75,36 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
     states.forEach((state, ind) => {
         dfaBuilder.addState(isFinalState[ind])
     })
-    dfaBuilder.addState(false)
-    
+    // dfaBuilder.addEdge("Start", "S1", undefined)
+
+    if (failingStateReachable) {
+        dfaBuilder.addState(false)
+        language.forEach((character,) => {
+            dfaBuilder.addEdge(`S${states.length + 1}`, `S${states.length + 1}`, character)
+        })
+    }
     transitions.forEach(([char, fromInd, toInd]) => {
-        toInd = Math.min(toInd + 2, states.length + 2)
-        fromInd = Math.min(fromInd + 2, states.length + 2)
+        toInd = Math.min(toInd + 1, states.length + 1)
+        fromInd = Math.min(fromInd + 1, states.length + 1)
         dfaBuilder.addEdge(`S${fromInd}`, `S${toInd}`, char)
     })
-    language.forEach((character,) => {
-        dfaBuilder.addEdge(`S${states.length + 2}`, `S${states.length + 2}`, character)
-    })
-    dfaBuilder.addEdge("S1", "S2", EMPTY)
+
+    // dfaBuilder.addEdge("START", "S1", EMPTY)
 }
-export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitionTable, NFATransitionTable, dfaBuilder:a}: DFAFromTransitionTableParams) {
+export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitionTable, NFATransitionTable, setStates, states}: DFAFromTransitionTableParams) {
     if (DFATransitionTable[1] === undefined) {
         return
     }
-    const language = langWithEpsillon.filter((c) => c!= EMPTY)
-    const dfaBuilder = new DFABuilder()
-    const finalState = [...NFATransitionTable[NFATransitionTable.length - 1][0]][0]
-    buildDFA(dfaBuilder, DFATransitionTable, language, finalState)
-    // setDFAStates(dfaBuilder.states)
+    useEffect(() => {
+        if (states.length == 0) {
+            const language = langWithEpsillon.filter((c) => c!= EMPTY)
+            const dfaBuilder = new DFABuilder()
+            const finalState = [...NFATransitionTable[NFATransitionTable.length - 1][0]][0]
+            buildDFA(dfaBuilder, DFATransitionTable, language, finalState)
+            setStates(dfaBuilder.states)
+        }
+    });
     return (
-        <GraphFromDFA states={dfaBuilder.states} />
+        <GraphFromDFA states={states} />
     )
 }

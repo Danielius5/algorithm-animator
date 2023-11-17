@@ -188,7 +188,9 @@ export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFA
     const [currentStep, setCurrentStep] = useState<number>(0)
     useEffect(() => {
         const dfaBuilder = new DFABuilder()
-        let parent = dfaBuilder.states[0].value
+        dfaBuilder.addState(false)
+        // dfaBuilder.addEdge("Start", "S1", undefined)
+        let parent = "S1"
         const stepsUntilCurrent = steps.slice(0, currentStep)
         // const s: Steps = []
         // for(const [step, aSub, bSub] of stepsUntilCurrent) {
