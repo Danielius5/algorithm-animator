@@ -56,3 +56,6 @@
 ### 17 Nov 2023
 * *4 hours* Allow animation from RegEx, fix bugs (aa* having disattached failing state, all DFA's having epsilon transition at the beginning, etc.)
 * *0.5 hours* Check if user input UI is deterministic or not
+
+### 30 Nov 2023
+* *3 hours* Adding react bootstrap and recognision of DFA / NDFA from UI

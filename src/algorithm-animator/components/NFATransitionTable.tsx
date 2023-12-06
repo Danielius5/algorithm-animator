@@ -1,6 +1,7 @@
 import { State } from "@/models/dfa";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { EMPTY } from "./ENFABuildAnimator";
+import { Col, Container, Row, Table } from "react-bootstrap";
 
 interface ENFAToDFAAnimatorParams {
     NFAstates: State[];
@@ -52,40 +53,45 @@ export function NFATransitionTable({NFAstates, language, NFATransitionTable, set
     }, [])
     return (
         <>
-            <h3>ε-NFA transition table</h3>
             {NFATransitionTable.length > 0 &&
-                <table>
-                    <thead>
-                        <tr>
-                            {NFATransitionTable[0].map((character) => <th key={[...character].join()}>{[...character].join()}</th>)}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {NFATransitionTable.slice(1).map((row, ind) => {
-                            return (
-                                <tr key={ind}>
-                                    {row.map((cell, index) => {
-                                        return (
-                                            <>
-                                                {[...cell].length == 0 ? 
-                                                (
-                                                    <td key={index}>∅</td>
-                                                )
-                                                : 
-                                
-                                                (
-                                                    <td key={index}>
-                                                        {[...cell].sort((a,b) => a.localeCompare(b)).join()}
-                                                     </td>
-                                                )}
-                                            </>
-                                        )
-                                        })}
+            <Container fluid>
+                <Row>
+                    <Col sm={2}>
+                        <Table bordered>
+                            <thead>
+                                <tr>
+                                    {NFATransitionTable[0].map((character) => <th key={[...character].join()}>{[...character].join()}</th>)}
                                 </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                {NFATransitionTable.slice(1).map((row, ind) => {
+                                    return (
+                                        <tr key={ind}>
+                                            {row.map((cell, index) => {
+                                                return (
+                                                    <>
+                                                        {[...cell].length == 0 ? 
+                                                        (
+                                                            <td key={index}>∅</td>
+                                                        )
+                                                        : 
+                                        
+                                                        (
+                                                            <td key={index}>
+                                                                {[...cell].sort((a,b) => a.localeCompare(b)).join()}
+                                                            </td>
+                                                        )}
+                                                    </>
+                                                )
+                                                })}
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </Table>
+                    </Col>
+                </Row>
+            </Container>
             }
         </>
     )

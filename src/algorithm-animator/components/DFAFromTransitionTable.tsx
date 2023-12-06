@@ -105,6 +105,8 @@ export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitio
         }
     });
     return (
-        <GraphFromDFA states={states} />
+        <>
+            <GraphFromDFA states={states} />
+        </>
     )
 }

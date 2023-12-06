@@ -7,6 +7,9 @@ import { useRouter } from "next/router";
 import { Animate } from "@/components/Animate";
 import { State } from "@/models/dfa";
 import { EMPTY } from "@/components/ENFABuildAnimator";
+import { MainNavbar } from "@/components/Navbar";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 export default function DFAFromUI () {
     const [isClient, setIsClient] = useState(false)
@@ -70,10 +73,31 @@ export default function DFAFromUI () {
 
         return true;
     }
+
+    function NFAToEpsillonNFA(states: State[]) {
+        for(let state of states) {
+            let transitionsByCharacter = new Map<string, State[]>()
+            for (let tr of state.transitions) {
+                if (tr.characterMatched) {
+                    let existingStates = transitionsByCharacter.get(tr.characterMatched) || []
+                    transitionsByCharacter.set(tr.characterMatched, [...existingStates, tr.stateTo])
+                }
+            }
+            transitionsByCharacter.forEach((states, character) => {
+            // if () {
+                
+            // }
+            })
+        }
+
+    }
     return (
         <div>
             {isClient &&
-                <>{!animate ? (
+                <>
+                <MainNavbar />
+                <br/>
+                {!animate ? (
                     <>
                         <div>
                             Add a State:
@@ -110,16 +134,19 @@ export default function DFAFromUI () {
                         <div>
                             <GraphFromDFA states={dfaBuilder.current.states} />
                         </div>
-                        <input type="button" onClick={() => setAnimate(true)} value = "animate" />
                         { isValidDFA == undefined ? (
                             <input type="button" onClick={() => setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states))} value = "Check if valid DFA" />
                             ) : (isValidDFA ? (
-                                <>Deterministic</>
+                                <>
+                                Deterministic
+                                <input type="button" onClick={() => setAnimate(true)} value = "animate" />
+                                </>
+                                
                             ) : (
                                 <>Non-deterministic</>
                             ))
                         }
-                        
+                            
                     </>
                 ) : (
                     <Animate states={dfaBuilder.current.states} goBack={() => setAnimate(false)}/>

@@ -185,30 +185,26 @@ export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFA
     let s: Steps = []
     getSteps(regex, s, true)
     const [steps, setSteps] = useState<Steps>(s)
-    const [currentStep, setCurrentStep] = useState<number>(0)
     useEffect(() => {
         const dfaBuilder = new DFABuilder()
         dfaBuilder.addState(false)
         // dfaBuilder.addEdge("Start", "S1", undefined)
         let parent = "S1"
-        const stepsUntilCurrent = steps.slice(0, currentStep)
         // const s: Steps = []
         // for(const [step, aSub, bSub] of stepsUntilCurrent) {
         //     s.push(...traverseSteps(step, aSub, bSub))
         // }
-        for(const [func, char, char2] of stepsUntilCurrent) {
+        for(const [func, char, char2] of steps) {
             const newParent = func(dfaBuilder, parent, char, char2)
             parent = newParent
         }
         setStates(dfaBuilder.states)
-        if (currentStep == steps.length) {
             setNFAComplete(true)
-        }
-    }, [steps, currentStep])
+    }, [steps])
     
     return (
         <>
-            <input type="button" onClick={() => setCurrentStep(Math.min(currentStep + 1, steps.length))}  value="Next" />
+            {/* <input type="button" onClick={() => setCurrentStep(Math.min(currentStep + 1, steps.length))}  value="Next" /> */}
             <GraphFromDFA states={states} />
         </>
     )
