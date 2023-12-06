@@ -1,8 +1,8 @@
+import { useState } from "react";
+import '../globals.css';
 import { State } from "../models/dfa";
-import { Dispatch, SetStateAction, useState } from "react";
 import { GraphAnimator } from "./GraphAnimator";
 import { Trace } from "./Trace";
-import '../globals.css'
 
 interface AnimateParams {
     states: State[]

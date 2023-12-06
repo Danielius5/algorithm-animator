@@ -1,6 +1,6 @@
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DFABuilder } from "../helpers/dfa_builder";
 import { State } from "../models/dfa";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { GraphFromDFA } from "./GraphFromDFA";
 
 export const EMPTY = "ε"
@@ -36,8 +36,7 @@ function addConcat(dfaBuilder: DFABuilder, parent: string,  a: Steps | string, _
 function addA(dfaBuilder: DFABuilder, parent: string, a:Steps | string, _: Steps | string) {
     let p = parent;
     for (const [step, aSub, bSub] of a) {
-        // For some reason typescript assumes its an array of Step | string | Steps instead of tuple of Step, Steps | string, Steps | string
-        //@ts-ignore
+        //@ts-expect-error For some reason typescript assumes its an array of Step | string | Steps instead of tuple of Step, Steps | string, Steps | string
         p = step(dfaBuilder, p, aSub, bSub);
     }
     return p;
@@ -109,11 +108,11 @@ function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
     const len = regex.length
     const orIndex = checkForCurrentLevelOr(regex)
     if (orIndex !== -1) {
-        let curStepsA: Steps = []
-        let curStepsB: Steps = []
+        const curStepsA: Steps = []
+        const curStepsB: Steps = []
 
-        let regexA = regex.substring(0,orIndex)
-        let regexB = regex.substring(orIndex + 1)
+        const regexA = regex.substring(0,orIndex)
+        const regexB = regex.substring(orIndex + 1)
         getSteps(regexA, curStepsA, false)
         getSteps(regexB, curStepsB, false)
 
@@ -126,9 +125,9 @@ function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
         return
     }
     for(let i = 0; i < len - 1;) {
-        let curSteps: Steps = []
+        const curSteps: Steps = []
         let nextI = appendCurSteps(regex, i, len, curSteps)
-        let next = regex[nextI]
+        const next = regex[nextI]
         
         if (next != "*" && next != "|") {
             steps.push([addConcat, curSteps, ""])
@@ -182,9 +181,9 @@ function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
 //     return steps
 // }
 export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFABuildAnimatorParams) {
-    let s: Steps = []
+    const s: Steps = []
     getSteps(regex, s, true)
-    const [steps, setSteps] = useState<Steps>(s)
+    const [steps, ] = useState<Steps>(s)
     useEffect(() => {
         const dfaBuilder = new DFABuilder()
         dfaBuilder.addState(false)

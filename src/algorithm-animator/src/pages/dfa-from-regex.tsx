@@ -1,15 +1,16 @@
+import { useState } from "react";
+import { Collapse } from "react-bootstrap";
+import { Animate } from "../components/Animate";
+import { CollapseButton } from "../components/CollapseButton";
 import { DFAFromTransitionTable } from "../components/DFAFromTransitionTable";
 import { DFATransitionTable } from "../components/DFATransitionTable";
-import { ENFABuildAnimator } from "../components/ENFABuildAnimator";
+import { EMPTY, ENFABuildAnimator } from "../components/ENFABuildAnimator";
 import { NFATransitionTable } from "../components/NFATransitionTable";
-import { State } from "../models/dfa";
-import { useState } from "react";
-import '../globals.css'
-import { Animate } from "../components/Animate";
-import { DFABuilder } from "../helpers/dfa_builder";
 import { MainNavbar } from "../components/Navbar";
-import { Button, Collapse } from "react-bootstrap";
-import { CollapseButton } from "../components/CollapseButton";
+import '../globals.css';
+import { getInitialDFATransitionTable } from "../helpers/DFATransitionTable";
+import { getInitialENFATransitionTable } from "../helpers/nfaTransitionTable";
+import { State } from "../models/dfa";
 
 function getLanguage(state: State, visited: Set<string>) {
     let set: Set<string> = new Set()
@@ -41,10 +42,6 @@ export default function DFAFromRegex() {
     // const [DFAComplete, setDFAComplete] = useState<boolean>(false)
 
     const [animate, setAnimate] = useState<boolean>(false)
-    const dfaBuilder = new DFABuilder();
-
-    const [NFATransitionTableState, setNFATransitionTableState] = useState<Set<string>[][]>([])
-    const [DFATransitionTableState, setDFATransitionTableState] = useState<Set<string>[][]>([])
 
     const [statesDFA, setStatesDFA] = useState<State[]>([])
 
@@ -56,15 +53,26 @@ export default function DFAFromRegex() {
 
 
     const visited:Set<string> = new Set();
+
     let language:string[] = [];
     if (statesNFA.length > 0) {
         language = Array.from(getLanguage(statesNFA[0], visited)).sort((a, b) => b.localeCompare(a));
     }
+
+    const languageNoEpsilon = language.filter((c) => c!= EMPTY)
+
+    let NFATransitionTableData: Set<string>[][] = []
+    let DFATransitionTableData: Set<string>[][] = []
+
+    NFATransitionTableData = getInitialENFATransitionTable(language, statesNFA)
+
+    if (NFATransitionTableData.length > 0 && languageNoEpsilon.length > 0) {
+        DFATransitionTableData = getInitialDFATransitionTable(languageNoEpsilon, NFATransitionTableData)
+    }
+
     function unsubmit() {
         setStatesNFA([])
         setNFAComplete(false)
-        setNFATransitionTableState([])
-        setDFATransitionTableState([])
         setStatesDFA([])
         setSubmit(false)
     }
@@ -104,7 +112,7 @@ export default function DFAFromRegex() {
 
                                 <Collapse in={visibleENFATransitionTable}>
                                     <div id="collapse-enfa-transition-table">
-                                        <NFATransitionTable NFAstates={statesNFA} language={language} NFATransitionTable={NFATransitionTableState} setNFATransitionTable={setNFATransitionTableState}/>
+                                        <NFATransitionTable NFAstates={statesNFA} language={language} NFATransitionTable={NFATransitionTableData}/>
                                     </div>
                                 </Collapse>
 
@@ -120,13 +128,13 @@ export default function DFAFromRegex() {
                                         </h2>
                                         <Collapse in={visibleDFATransitionTable}>
                                             <div id="collapse-DFA-transition-table">
-                                                <DFATransitionTable language={language} NFATransitionTable={NFATransitionTableState} setDFATransitionTable={setDFATransitionTableState} DFATransitionTable={DFATransitionTableState}/>
+                                                <DFATransitionTable language={language} NFATransitionTable={NFATransitionTableData} DFATransitionTable={DFATransitionTableData}/>
                                             </div>
                                         </Collapse>
                                         {DFATransitionTable.length > 0 && (
                                             <>
                                                 <h2>Resultant DFA</h2>
-                                                <DFAFromTransitionTable DFATransitionTable={DFATransitionTableState} NFATransitionTable={NFATransitionTableState} language={language} setStates={setStatesDFA} states={statesDFA}/>
+                                                <DFAFromTransitionTable DFATransitionTable={DFATransitionTableData} NFATransitionTable={NFATransitionTableData} language={language} setStates={setStatesDFA} states={statesDFA}/>
                                             </>
                                         )}
                                         <input type="button" onClick={() => setAnimate(true)} value = "animate" />

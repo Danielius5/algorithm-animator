@@ -62,3 +62,4 @@
 
 ### 6 Nov 2023
 * *2 hours* Refactor code, change NextJS to Vite
+* *1.5 hour* Further cleanup

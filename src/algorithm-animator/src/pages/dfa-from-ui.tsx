@@ -1,10 +1,10 @@
-import { DFABuilder } from "../helpers/dfa_builder";
-import { useEffect, useRef, useState } from "react";
-import { GraphFromDFA } from "../components/GraphFromDFA";
+import { useRef, useState } from "react";
 import { Animate } from "../components/Animate";
-import { State } from "../models/dfa";
 import { EMPTY } from "../components/ENFABuildAnimator";
+import { GraphFromDFA } from "../components/GraphFromDFA";
 import { MainNavbar } from "../components/Navbar";
+import { DFABuilder } from "../helpers/dfa_builder";
+import { State } from "../models/dfa";
 
 
 export default function DFAFromUI () {
@@ -44,9 +44,9 @@ export default function DFAFromUI () {
     }
 
     function checkIfValidDFA(states: State[]) {
-        for(let state of states) {
-            let transitionsByCharacter = new Set()
-            for (let tr of state.transitions) {
+        for(const state of states) {
+            const transitionsByCharacter = new Set()
+            for (const tr of state.transitions) {
                 if (transitionsByCharacter.has(tr.characterMatched)){
                     return false; // 2 transitions with same character - non deterministic
                 }
@@ -60,23 +60,23 @@ export default function DFAFromUI () {
         return true;
     }
 
-    function NFAToEpsillonNFA(states: State[]) {
-        for(let state of states) {
-            let transitionsByCharacter = new Map<string, State[]>()
-            for (let tr of state.transitions) {
-                if (tr.characterMatched) {
-                    let existingStates = transitionsByCharacter.get(tr.characterMatched) || []
-                    transitionsByCharacter.set(tr.characterMatched, [...existingStates, tr.stateTo])
-                }
-            }
-            transitionsByCharacter.forEach((states, character) => {
-            // if () {
+    // function NFAToEpsillonNFA(states: State[]) {
+    //     for(const state of states) {
+    //         const transitionsByCharacter = new Map<string, State[]>()
+    //         for (const tr of state.transitions) {
+    //             if (tr.characterMatched) {
+    //                 const existingStates = transitionsByCharacter.get(tr.characterMatched) || []
+    //                 transitionsByCharacter.set(tr.characterMatched, [...existingStates, tr.stateTo])
+    //             }
+    //         }
+    //         transitionsByCharacter.forEach((states, character) => {
+    //         // if () {
                 
-            // }
-            })
-        }
+    //         // }
+    //         })
+    //     }
 
-    }
+    // }
     return (
         <div>
             <MainNavbar />

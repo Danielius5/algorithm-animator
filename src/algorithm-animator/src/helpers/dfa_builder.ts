@@ -1,4 +1,4 @@
-import { DFA, State, Transition } from "@/models/dfa";
+import { State } from "../models/dfa";
 
 export class DFABuilder {
     stateValues: Set<string> 

@@ -1,6 +1,6 @@
-import { State, Step, instanceOfState } from "@/models/dfa";
-import { GraphFromDFA } from "./GraphFromDFA";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { State, Step } from "../models/dfa";
+import { GraphFromDFA } from "./GraphFromDFA";
 
 interface GraphAnimatorParams {
     states: State[]
@@ -27,7 +27,7 @@ function recursiveBuildSteps(state: State, text: string, steps: Step[]) {
     recursiveBuildSteps(transition.stateTo, remainder, steps)
 }
 function getSteps(states: State[], text: string) {
-    let steps: Step[] = [states[0]]
+    const steps: Step[] = [states[0]]
     recursiveBuildSteps(states[0], text, steps);
 
     return steps;
@@ -47,7 +47,7 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
     
     const [goForward, setGoForward] = useState<boolean | undefined >(undefined);
     let steps: Step[] = []
-    let visited: Set<Step> = new Set()
+    const visited: Set<Step> = new Set()
     useEffect(() => {
         setGoForward(undefined);
     })
@@ -62,7 +62,7 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
         }
         if (currentStep == steps.length - 1) {
             const finalStep = steps[currentStep];
-            // @ts-ignore
+            // @ts-expect-error cannot avoid guessing which type of step this is - transition or state
             if(finalStep.isAccepted && Math.floor(nextLetterState) == text.length){
                 setCurrentState("Accepted")
             }
@@ -79,7 +79,6 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
         steps = getSteps(states, text);
         console.log(steps)
         if (steps.length == 1) {
-            //@ts-ignore
             setCurrentState("Rejected")
         }
     }

@@ -9,7 +9,7 @@ export interface State {
     transitions: Transition[]
     active?: boolean;
 }
-
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export function instanceOfState(object: any): object is State {
     return 'state' in object;
 }

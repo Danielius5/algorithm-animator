@@ -38,9 +38,9 @@ function isFailingState(state: Set<string>) {
 const INF = 100000;
 function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], language: string[], finalState: string) {
     const baseState = DFATransitionTable[1][0]
-    let states: Set<string>[] = [baseState]
-    let isFinalState: boolean[] = [baseState.has(finalState)]
-    let transitions:[string, number, number][] = []
+    const states: Set<string>[] = [baseState]
+    const isFinalState: boolean[] = [baseState.has(finalState)]
+    const transitions:[string, number, number][] = []
 
     let table = DFATransitionTable.slice(1)
     table = table.filter((row) => !isFailingState(row[0]))

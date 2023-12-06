@@ -5,9 +5,9 @@ interface TraceParams {
     state: string
 }
 function buildText(text: string, current: number) {
-    let letters:[string, boolean][] = [];
+    const letters:[string, boolean][] = [];
     for (let i = 0; i < text.length; i++) {
-        let pair: [string, boolean] = [text[i], false];
+        const pair: [string, boolean] = [text[i], false];
         if (i == current) {
             pair[1] = true;
         }
@@ -16,7 +16,7 @@ function buildText(text: string, current: number) {
     return letters
 
 }
-export function Trace({text, current, log, state} : TraceParams) {
+export function Trace({text, current, state} : TraceParams) {
     let letters: [string, boolean][] = [];
     const textWithEmpty = " " + text
     if (text) {

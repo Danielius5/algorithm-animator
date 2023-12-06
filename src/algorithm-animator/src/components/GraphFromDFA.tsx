@@ -1,6 +1,6 @@
-import { DFA, State, Transition } from "@/models/dfa"
-import { useEffect, useState } from "react"
+import { State } from "../models/dfa"
 import mermaid from 'mermaid'
+import { useEffect, useState } from "react"
 
 interface MermaidParams {
     graph: string
@@ -54,8 +54,8 @@ interface GraphFromDFAParams {
   states: State[]
 }
 export function GraphFromDFA({states}:GraphFromDFAParams) {
-    let visited = new Set<string>();
-    let graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
+    const visited = new Set<string>();
+    const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
     for(const state of states) {
       recursiveAppendGraph(graph, state, visited);
     }
