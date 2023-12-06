@@ -59,3 +59,6 @@
 
 ### 30 Nov 2023
 * *3 hours* Adding react bootstrap and recognision of DFA / NDFA from UI
+
+### 6 Nov 2023
+* *2 hours* Refactor code, change NextJS to Vite
