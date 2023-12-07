@@ -51,7 +51,9 @@ describe('Test functionality', () => {
             for(const instance of data) {
                 const [text, numberOfSteps, isAccepted] = instance;
 
-                cy.get("#user-input-text-for-dfa").clear().type(text)
+                cy.get("#user-input-text-for-dfa").clear()
+                cy.get("#user-input-text-for-dfa").type(text)
+                
                 // FIXME a bit of a hack as if the text is immediately rejected e.g. if regex is a|b and text is c
                 // then in progress never appears
                 if (isAccepted) { 
