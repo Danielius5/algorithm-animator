@@ -58,13 +58,10 @@ jobs:
       #     tail: true
       #     wait-for: 30s
       #     working-directory: './src/algorithm-animator'
-      - name: Spin up website
-        run: |
-          npm run preview & 
-          echo "Waiting..."
-          sleep 5
-          echo "Successfully spinned up!"
-          curl localhost:10051/algorithm-animator -m 20
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm run preview
   deploy:
     if: github.ref == 'refs/heads/main'
     environment:
