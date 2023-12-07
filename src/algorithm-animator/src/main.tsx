@@ -1,13 +1,13 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import DFAFromRegex from './pages/dfa-from-regex.tsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import Home from './pages/home.tsx';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { RouterProvider, createHashRouter } from 'react-router-dom';
+import DFAFromRegex from './pages/dfa-from-regex.tsx';
 import DFAFromUI from './pages/dfa-from-ui.tsx';
+import Home from './pages/home.tsx';
 
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element:<Home />,
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     path: "/dfa-from-ui",
     element:<DFAFromUI />,
   },
-], {basename: "/algorithm-animator"});
+]);
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
