@@ -22,7 +22,7 @@ export function Animate({states, goBack}:AnimateParams) {
     // key={text} needed so we recreate graph animator on change to text
     return (
         <>
-            <input onChange={(e) => {setText(e.target.value);  setCurrentStep(0);setCurrentLetter(0.5);}} value={text}/>
+            <input onChange={(e) => {setText(e.target.value);  setCurrentStep(0);setCurrentLetter(0.5);}} value={text} id="user-input-text-for-dfa"/>
             <Trace text={text} current={Math.floor(currentLetter)} log={[]} state={currentState}/>
             <GraphAnimator states={states} text={text} currentLetter={currentLetter} setCurrentLetter={setCurrentLetter} setCurrentState={setCurrentState} setCurrentStep={setCurrentStep} currentStep={currentStep} key={text}/>
 
