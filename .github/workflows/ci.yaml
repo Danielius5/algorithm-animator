@@ -1,7 +1,7 @@
 # Taken from Vite docs and modified according to needs
 # https://vitejs.dev/guide/static-deploy
 
-name: Deploy static content to Pages
+name: Test and Deploy
 
 on:
   push:
