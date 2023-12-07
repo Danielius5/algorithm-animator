@@ -1,7 +1,7 @@
 # Taken from Vite docs and modified according to needs
 # https://vitejs.dev/guide/static-deploy
 
-name: Deploy static content to Pages
+name: Test and Deploy
 
 on:
   push:
@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   e2e-test:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
