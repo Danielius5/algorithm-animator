@@ -57,6 +57,7 @@ jobs:
             http://localhost:10051
           tail: true
           wait-for: 30s
+          working-directory: './src/algorithm-animator'
       - name: Try accessing
         run: curl localhost:10051/algorithm-animator -m 20
   deploy:
