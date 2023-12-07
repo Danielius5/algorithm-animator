@@ -63,7 +63,7 @@ jobs:
           npm run preview & 
           sleep 10
       - name: Try accessing
-        run: curl e2e-test:10051/algorithm-animator -m 20
+        run: curl 127.0.0.1:10051/algorithm-animator -m 20
   deploy:
     if: github.ref == 'refs/heads/main'
     environment:
