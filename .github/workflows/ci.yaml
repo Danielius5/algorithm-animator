@@ -36,7 +36,28 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-
+  e2e-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './src/algorithm-animator'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm install
+      - uses: JarvusInnovations/background-action@v1
+        name: Bootstrap System Under Test (SUT)
+        with:
+          run: npm run preview
+          wait-on: |
+            http://localhost:10051
+          tail: true
+          wait-for: 30s
+      - name: Try accessing
+        run: curl localhost:10051/algorithm-animator -m 20
   deploy:
     if: github.ref == 'refs/heads/main'
     environment:
@@ -44,6 +65,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
