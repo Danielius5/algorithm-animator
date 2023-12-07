@@ -64,7 +64,7 @@ jobs:
           echo "Waiting..."
           sleep 5
           echo "Successfully spinned up!"
-          curl localhost:10051/algorithm-animator -m 20
+          curl localhost/algorithm-animator -m 20
   deploy:
     if: github.ref == 'refs/heads/main'
     environment:
