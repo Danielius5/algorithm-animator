@@ -61,7 +61,9 @@ jobs:
       - name: Spin up website
         run: |
           npm run preview & 
+          echo "Waiting..."
           sleep 5
+          echo "Successfully spinned up!"
           curl localhost/algorithm-animator -m 20
   deploy:
     if: github.ref == 'refs/heads/main'
