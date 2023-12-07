@@ -82,8 +82,8 @@ export default function DFAFromRegex() {
         <br/>
         {!animate ? (
             <>
-                <input onChange={(e) => {setRegex(e.target.value); unsubmit()}} value={regex}/>
-                <input type="button" onClick={() => setSubmit(true)} value="build dfa" />
+                <input onChange={(e) => {setRegex(e.target.value); unsubmit()}} value={regex} id="regex-input"/>
+                <input type="button" onClick={() => setSubmit(true)} value="build dfa" id="regex-build-dfa-button" />
                 {submit && (
                     <>
                         <h2>
@@ -137,7 +137,7 @@ export default function DFAFromRegex() {
                                                 <DFAFromTransitionTable DFATransitionTable={DFATransitionTableData} NFATransitionTable={NFATransitionTableData} language={language} setStates={setStatesDFA} states={statesDFA}/>
                                             </>
                                         )}
-                                        <input type="button" onClick={() => setAnimate(true)} value = "animate" />
+                                        <input type="button" onClick={() => setAnimate(true)} value = "animate" id="animate-dfa-from-regex-button" />
                                     </>
                                 )}
                             </>
