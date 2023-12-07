@@ -67,4 +67,4 @@
 ### 7 Nov 2023
 * *0.5 hours* Set up basic github workflow for deploying to pages
 * *1.0 hour* Fix deployment, routing, have website page deployed properly.
-* *2.0 hours* Add e2e tests that run locally
+* *3.0 hours* Add e2e tests that run locally (time corrected as 2.0 hours was wrong)
