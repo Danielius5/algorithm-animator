@@ -63,3 +63,6 @@
 ### 6 Nov 2023
 * *2 hours* Refactor code, change NextJS to Vite
 * *1.5 hour* Further cleanup
+
+### 7 Nov 2023
+* *0.5 hours* Set up basic github workflow for deploying to pages
