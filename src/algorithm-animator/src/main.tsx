@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     path: "/dfa-from-ui",
     element:<DFAFromUI />,
   },
-]);
+], {basename: "/algorithm-animator"});
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
