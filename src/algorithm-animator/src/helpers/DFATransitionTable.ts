@@ -23,7 +23,7 @@ export function getInitialDFATransitionTable(language: string[], NFATransitionTa
         }
 
         const row = [reachableStates]
-        language.forEach((character, ind) => {
+        language.forEach((_, ind) => {
             let characterSet = new Set<string>
             let result = new Set<string>
             for (const s of reachableStates) {

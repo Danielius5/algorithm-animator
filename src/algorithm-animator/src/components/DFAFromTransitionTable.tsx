@@ -72,7 +72,7 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
         })
     })
 
-    states.forEach((state, ind) => {
+    states.forEach((_, ind) => {
         dfaBuilder.addState(isFinalState[ind])
     })
     // dfaBuilder.addEdge("Start", "S1", undefined)

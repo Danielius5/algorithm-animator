@@ -9,7 +9,7 @@ import { NFATransitionTable } from "../components/NFATransitionTable";
 import { MainNavbar } from "../components/Navbar";
 import '../globals.css';
 import { getInitialDFATransitionTable } from "../helpers/DFATransitionTable";
-import { getInitialENFATransitionTable } from "../helpers/nfaTransitionTable";
+import { getInitialENFATransitionTable } from "../helpers/NFATransitionTable";
 import { State } from "../models/dfa";
 
 function getLanguage(state: State, visited: Set<string>) {
