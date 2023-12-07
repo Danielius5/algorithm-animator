@@ -4,7 +4,7 @@ export function MainNavbar() {
     return (
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container>
-          <Navbar.Brand href="/">Finite State Automaton Animator</Navbar.Brand>
+          <Navbar.Brand href="/algorithm-animator">Finite State Automaton Animator</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
