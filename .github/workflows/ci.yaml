@@ -53,8 +53,6 @@ jobs:
         name: Bootstrap System Under Test (SUT)
         with:
           run: npm run preview
-          wait-on: |
-            http://localhost:10051
           tail: true
           wait-for: 30s
           working-directory: './src/algorithm-animator'
