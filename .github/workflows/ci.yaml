@@ -61,9 +61,8 @@ jobs:
       - name: Spin up website
         run: |
           npm run preview & 
-          sleep 10
-      - name: Try accessing
-        run: curl 127.0.0.1:10051/algorithm-animator -m 20
+          sleep 5
+          curl localhost/algorithm-animator -m 20
   deploy:
     if: github.ref == 'refs/heads/main'
     environment:
