@@ -49,13 +49,19 @@ jobs:
         uses: actions/setup-node@v3
       - name: Install dependencies
         run: npm install
-      - uses: JarvusInnovations/background-action@v1
-        name: Bootstrap System Under Test (SUT)
-        with:
-          run: npm run preview
-          tail: true
-          wait-for: 30s
-          working-directory: './src/algorithm-animator'
+      # - uses: JarvusInnovations/background-action@v1
+      #   name: Bootstrap System Under Test (SUT)
+      #   with:
+      #     run: npm run preview
+      #     wait-on: |
+      #       http://localhost:10051
+      #     tail: true
+      #     wait-for: 30s
+      #     working-directory: './src/algorithm-animator'
+      - name: Spin up website
+        run: |
+          npm run preview & 
+          sleep 10
       - name: Try accessing
         run: curl localhost:10051/algorithm-animator -m 20
   deploy:
