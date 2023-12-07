@@ -37,6 +37,7 @@ jobs:
       - name: Build
         run: npm run build
   e2e-test:
+    needs: build
     runs-on: ubuntu-latest
     defaults:
       run:
