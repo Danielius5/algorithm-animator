@@ -38,16 +38,36 @@ function recursiveAppendGraph(graph: string[], state: State, visited: Set<string
 
   graph.push(`\n  ${state.value}`)
   visited.add(state.value)
+  const transitionsToCharacters:Record<string, string[]> = {}
+  const isTransitionAdded:Record<string, boolean> = {}
+  const isTransitionActive:Record<string, boolean> = {}
 
   for (const transition of state.transitions) {
     if (transition.characterMatched) {
-      graph.push(`\n  ${state.value} ${transition.active ? "==" : "--"} ${transition.characterMatched} ${transition.active ? "==>" : "-->"} ${transition.stateTo.value}`)
-    } else {
-      graph.push(`\n  ${state.value} ${transition.active ? "==>" : "-->"} ${transition.stateTo.value}`)
-
+      const key = state.value + "_" + transition.stateTo.value
+      if (!transitionsToCharacters[key]) {
+        transitionsToCharacters[key] = []
+      }
+      transitionsToCharacters[key].push(transition.characterMatched)
+      isTransitionAdded[key] = false
+      isTransitionActive[key] = transition.active ?? false
     }
     recursiveAppendGraph(graph, transition.stateTo, visited);
   }
+
+  Object.entries(transitionsToCharacters).map(([states, characters]) => {
+    if (!isTransitionAdded[states]) {
+      const [fromState, toState] = states.split("_")
+      const charactersJoined = characters.join(",")
+      const isActive = isTransitionActive[states]
+      graph.push(`\n  ${fromState} ${isActive ? "==" : "--"} ${charactersJoined} ${isActive ? "==>" : "-->"} ${toState}`)
+      
+      isTransitionAdded[states] = true
+    
+    }
+  })
+
+
 }
 
 interface GraphFromDFAParams {
