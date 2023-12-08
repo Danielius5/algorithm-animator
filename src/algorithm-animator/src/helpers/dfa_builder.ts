@@ -25,7 +25,13 @@ export class DFABuilder {
         const fromNode = this.states.find((value) => value.value == from);
         const toNode = this.states.find((value) => value.value == to);
         if (!fromNode || !toNode) {
-            throw Error("Attempted edge creation between non-existing states")
+            alert("Attempted edge creation between non-existing states")
+            throw Error()
+        }
+        const identicalEdge = fromNode.transitions.find((t) => t.stateTo == toNode && t.characterMatched == characterMatched)
+        if (identicalEdge) {
+            alert("This edge already exists, cannot create identical one!")
+            throw Error()
         }
         fromNode.transitions.push({stateTo: toNode, characterMatched: characterMatched})
     }

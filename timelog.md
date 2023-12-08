@@ -60,11 +60,15 @@
 ### 30 Nov 2023
 * *3 hours* Adding react bootstrap and recognision of DFA / NDFA from UI
 
-### 6 Nov 2023
+### 6 Dec 2023
 * *2 hours* Refactor code, change NextJS to Vite
 * *1.5 hour* Further cleanup
 
-### 7 Nov 2023
+### 7 Dec 2023
 * *0.5 hours* Set up basic github workflow for deploying to pages
 * *1.0 hour* Fix deployment, routing, have website page deployed properly.
 * *3.0 hours* Add e2e tests that run locally (time corrected as 2.0 hours was wrong)
+
+### 8 Dec 2023
+* *0.5 hours* Read about dependabot, set up dependabot
+* *1.5 hours* Cosmetic fix of merging multiple transitions between identical states into one, also dont allow identical transitions
