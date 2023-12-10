@@ -75,3 +75,4 @@
 
 ### 10 Dec 2023
 * *3.0 hours* Fix deleting of edges, add UI e2e tests, fix unhandled errors 
+* *3.0 hours* Find a way to allow creating edges by clicking on nodes and entering the character to match

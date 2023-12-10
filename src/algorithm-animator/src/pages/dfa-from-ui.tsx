@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Animate } from "../components/Animate";
 import { EMPTY } from "../components/ENFABuildAnimator";
 import { GraphFromDFA } from "../components/GraphFromDFA";
@@ -6,8 +6,47 @@ import { MainNavbar } from "../components/Navbar";
 import { DFABuilder } from "../helpers/dfa_builder";
 import { State } from "../models/dfa";
 
+// Idea of iterating over parent elements taken and modified from here: https://stackoverflow.com/a/8729274
+function getParentElements(element: HTMLElement) {
+    let parent: HTMLElement | null = element;
+    let allParents = [];
+    while (parent) {
+        allParents.push(parent);
+
+        parent = parent.parentElement;
+    }
+    return allParents
+}
+
+function findMermaidNodeObject(elements: HTMLElement[]) {
+    return elements.find((element) => /flowchart-S[0-9]+-[0-9]+/.test(element.id))
+}
 
 export default function DFAFromUI () {
+    const [selectedStates, setSelectedStates] = useState<string[]>([])
+
+    function handleClicksOnFSA(event: Event) {
+        //@ts-expect-error does not like types..
+        const parents = getParentElements(event.target)
+        const mermaidObj = findMermaidNodeObject(parents)
+    
+        if (mermaidObj) {
+            const state = mermaidObj.id.match(/S[0-9]+/)![0]
+            setSelectedStates((currentSelectedStates) => [...currentSelectedStates, state])
+        }
+        
+    }
+
+    useEffect(() => {         
+        console.log("adding") 
+        window.addEventListener('click', handleClicksOnFSA);
+        
+        return () => {
+
+          window.removeEventListener('click', handleClicksOnFSA);
+        }
+    }, []);
+
 
     const [isAcceptedState, setIsAcceptedState] = useState<boolean>(false);
 
@@ -19,7 +58,19 @@ export default function DFAFromUI () {
     const [states, setStates] = useState<string[]>([])
     const [edges, setEdges] = useState<[string, string, string][]>([])
 
-    
+    console.log(selectedStates)
+    useEffect(() => {
+        if (selectedStates.length == 2) {
+            const charMatched = prompt("Desired character: ") ?? "";
+            const edgeFrom = selectedStates[0]
+            const edgeTo = selectedStates[1]
+            dfaBuilder.current.addEdge(edgeFrom, edgeTo, charMatched)
+            setEdges([...edges, [edgeFrom,edgeTo, charMatched]])
+            setSelectedStates([])
+        }
+
+    }, [selectedStates]);
+
     const [isValidDFA, setIsValidDFA] = useState<boolean | undefined>(undefined)
     const [animate, setAnimate] = useState<boolean>(false)
 
@@ -119,7 +170,7 @@ export default function DFAFromUI () {
                     </div>
 
                     <div>
-                        <GraphFromDFA states={dfaBuilder.current.states} />
+                        <GraphFromDFA states={dfaBuilder.current.states} selectedStates={selectedStates}/>
                     </div>
                     { isValidDFA == undefined ? (
                         <input type="button" onClick={() => setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states))} value = "Check if valid DFA" />
