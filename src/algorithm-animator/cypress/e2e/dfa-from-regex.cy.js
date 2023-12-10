@@ -1,9 +1,4 @@
-describe('Test functionality', () => {
-    it('Checks website is reachable', () => {
-      cy.visit('/')
-  
-      cy.contains('Finite')
-    }),
+describe('Test DFA from RegEx', () => {
     [
         // Basic
         ['a', [
