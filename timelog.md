@@ -72,3 +72,6 @@
 ### 8 Dec 2023
 * *0.5 hours* Read about dependabot, set up dependabot
 * *1.5 hours* Cosmetic fix of merging multiple transitions between identical states into one, also dont allow identical transitions
+
+### 10 Dec 2023
+* *3.0 hours* Fix deleting of edges, add UI e2e tests, fix unhandled errors 

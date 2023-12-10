@@ -25,13 +25,13 @@ export class DFABuilder {
         const fromNode = this.states.find((value) => value.value == from);
         const toNode = this.states.find((value) => value.value == to);
         if (!fromNode || !toNode) {
-            alert("Attempted edge creation between non-existing states")
-            throw Error()
+            alert("Attempted edge creation between non-existing states!")
+            throw new Error()
         }
         const identicalEdge = fromNode.transitions.find((t) => t.stateTo == toNode && t.characterMatched == characterMatched)
         if (identicalEdge) {
             alert("This edge already exists, cannot create identical one!")
-            throw Error()
+            throw new Error()
         }
         fromNode.transitions.push({stateTo: toNode, characterMatched: characterMatched})
     }
@@ -40,11 +40,11 @@ export class DFABuilder {
         const fromNode = this.states.find((value) => value.value == from);
         const toNode = this.states.find((value) => value.value == to);
         if (!fromNode || !toNode) {
-            throw Error("Attempted edge deletion between non-existing states")
+            throw new Error("Attempted edge deletion between non-existing states")
         }
         const edgeExists = fromNode.transitions.find((value) => value.stateTo.value == to && value.characterMatched == characterMatched)
         if (!edgeExists) {
-            throw Error("Edge does not exist")
+            throw new Error("Edge does not exist")
         }
         fromNode.transitions = fromNode.transitions.filter((value) => !(value.stateTo.value == to && value.characterMatched == characterMatched))
     }
