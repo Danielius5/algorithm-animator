@@ -22,6 +22,10 @@ export class DFABuilder {
     }
 
     addEdge(from: string, to: string, characterMatched: string | undefined) {
+        if (!characterMatched) {
+            alert("Cannot create an edge without matching character!")
+            throw new Error()
+        }
         const fromNode = this.states.find((value) => value.value == from);
         const toNode = this.states.find((value) => value.value == to);
         if (!fromNode || !toNode) {

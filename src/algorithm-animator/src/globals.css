@@ -29,3 +29,6 @@ table, th, td {
     fill: white;
     stroke: #000!important;
 } */
+.nodeLabel {
+    user-select: none!important;
+}

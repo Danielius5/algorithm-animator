@@ -38,7 +38,6 @@ export default function DFAFromUI () {
     }
 
     useEffect(() => {         
-        console.log("adding") 
         window.addEventListener('click', handleClicksOnFSA);
         
         return () => {
@@ -61,11 +60,16 @@ export default function DFAFromUI () {
     console.log(selectedStates)
     useEffect(() => {
         if (selectedStates.length == 2) {
-            const charMatched = prompt("Desired character: ") ?? "";
-            const edgeFrom = selectedStates[0]
-            const edgeTo = selectedStates[1]
-            dfaBuilder.current.addEdge(edgeFrom, edgeTo, charMatched)
-            setEdges([...edges, [edgeFrom,edgeTo, charMatched]])
+            try{
+                const charMatched = prompt("Desired character: ");
+                if (charMatched) {
+                    const edgeFrom = selectedStates[0]
+                    const edgeTo = selectedStates[1]
+
+                    dfaBuilder.current.addEdge(edgeFrom, edgeTo, charMatched)
+                    setEdges([...edges, [edgeFrom,edgeTo, charMatched]])
+                }
+            } catch(err) {} // ignore errors from creating edge, just stop next steps
             setSelectedStates([])
         }
 
@@ -84,7 +88,7 @@ export default function DFAFromUI () {
             dfaBuilder.current.addEdge(edgeFrom, edgeTo, charToMatch);
             setEdges([...edges, [edgeFrom,edgeTo, charToMatch]])
             cleanForm();
-        } catch(err) {}
+        } catch(err) {} // ignore errors from creating edge, just stop next steps
     }
     function addState() {
         const value = dfaBuilder.current.addState(isAcceptedState); 
