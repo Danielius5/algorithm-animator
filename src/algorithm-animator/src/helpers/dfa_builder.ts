@@ -52,4 +52,10 @@ export class DFABuilder {
         }
         fromNode.transitions = fromNode.transitions.filter((value) => !(value.stateTo.value == to && value.characterMatched == characterMatched))
     }
+    deleteState(s:string) {
+        this.states = this.states.filter((state)=> state.value !== s)
+        this.states.forEach((_, index) => {
+            this.states[index].transitions = this.states[index].transitions.filter((transition) =>transition.stateTo.value !== s)
+        })
+    }
 }

@@ -79,6 +79,9 @@ interface GraphFromDFAParams {
 export function GraphFromDFA({states, selectedStates}:GraphFromDFAParams) {
     const visited = new Set<string>();
     const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
+    if (states.length > 0) {
+      graph.push(`\n  START --> ${states[0].value}`)
+    }
     for(const state of states) {
       recursiveAppendGraph(graph, state, visited, selectedStates ?? []);
     }

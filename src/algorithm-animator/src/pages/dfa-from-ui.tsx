@@ -21,11 +21,14 @@ function getParentElements(element: HTMLElement) {
 function findMermaidNodeObject(elements: HTMLElement[]) {
     return elements.find((element) => /flowchart-S[0-9]+-[0-9]+/.test(element.id))
 }
-
+function extractStateFromElementId(id: string) {
+    return id.match(/S[0-9]+/)![0]
+}
 export default function DFAFromUI () {
     const [selectedStates, setSelectedStates] = useState<string[]>([])
 
     function handleClicksOnFSA(event: Event) {
+        event.preventDefault();
         //@ts-expect-error does not like types..
         const element: HTMLElement = event.target
 
@@ -41,16 +44,36 @@ export default function DFAFromUI () {
         if (mermaidObj) {
             const state = mermaidObj.id.match(/S[0-9]+/)![0]
             setSelectedStates((currentSelectedStates) => [...currentSelectedStates, state])
+            return
         }
         
     }
 
+    function disableContextMenu(event: Event) {
+        event.preventDefault()
+    
+        //@ts-expect-error does not like types..
+        const element: HTMLElement = event.target
+    
+        const parents = getParentElements(element)
+        const mermaidObj = findMermaidNodeObject(parents)
+
+        if (mermaidObj) {
+            const stateToDelete = extractStateFromElementId(mermaidObj.id)
+            dfaBuilder.current.deleteState(stateToDelete)
+            setStates((currentStates) => currentStates.filter((state) => state !== stateToDelete))
+            setEdges((edges) => edges.filter(([from, to, _]) => from !== stateToDelete && to !== stateToDelete))
+        }
+    }
+
     useEffect(() => {         
         window.addEventListener('click', handleClicksOnFSA);
-        
+        document.addEventListener('contextmenu', disableContextMenu)
+
         return () => {
 
           window.removeEventListener('click', handleClicksOnFSA);
+          document.removeEventListener('contextmenu', disableContextMenu)
         }
     }, []);
 
@@ -65,7 +88,6 @@ export default function DFAFromUI () {
     const [states, setStates] = useState<string[]>([])
     const [edges, setEdges] = useState<[string, string, string][]>([])
 
-    console.log(selectedStates)
     useEffect(() => {
         if (selectedStates.length == 2) {
             try{
@@ -107,6 +129,11 @@ export default function DFAFromUI () {
         el.preventDefault();
         dfaBuilder.current.deleteEdge(from, to, characterMatched);
         setEdges(edges.filter(([eFrom, eTo, eCharacterMatched]) => from != eFrom || to != eTo || characterMatched != eCharacterMatched))
+    }
+
+    function deleteState(state: string) {
+        dfaBuilder.current.deleteState(state);
+        setStates(states.filter((st) => st !== state))    
     }
 
     function checkIfValidDFA(states: State[]) {
