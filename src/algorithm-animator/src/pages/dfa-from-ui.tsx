@@ -27,9 +27,17 @@ export default function DFAFromUI () {
 
     function handleClicksOnFSA(event: Event) {
         //@ts-expect-error does not like types..
-        const parents = getParentElements(event.target)
+        const element: HTMLElement = event.target
+
+        const parents = getParentElements(element)
         const mermaidObj = findMermaidNodeObject(parents)
-    
+        const isElementCanvas = element.classList.contains("mermaid") && element.nodeName === "PRE"
+        if (isElementCanvas) {
+            const isAccepting = confirm("Make it an accepting state?") ?? false
+            const state = dfaBuilder.current.addState(isAccepting)
+            setStates((currentStates) => [...currentStates, state])
+            return
+        }
         if (mermaidObj) {
             const state = mermaidObj.id.match(/S[0-9]+/)![0]
             setSelectedStates((currentSelectedStates) => [...currentSelectedStates, state])

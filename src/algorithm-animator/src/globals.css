@@ -32,3 +32,8 @@ table, th, td {
 .nodeLabel {
     user-select: none!important;
 }
+
+.mermaid {
+    border: 1px solid black;
+    min-height: 100px;
+}
