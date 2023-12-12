@@ -9,7 +9,7 @@ import { State } from "../models/dfa";
 // Idea of iterating over parent elements taken and modified from here: https://stackoverflow.com/a/8729274
 function getParentElements(element: HTMLElement) {
     let parent: HTMLElement | null = element;
-    let allParents = [];
+    const allParents = [];
     while (parent) {
         allParents.push(parent);
 
@@ -100,7 +100,9 @@ export default function DFAFromUI () {
                     dfaBuilder.current.addEdge(edgeFrom, edgeTo, charMatched)
                     setEdges([...edges, [edgeFrom,edgeTo, charMatched]])
                 }
-            } catch(err) {} // ignore errors from creating edge, just stop next steps
+            } catch(err) {
+                // ignore errors from creating edge, just stop next steps
+            } 
             setSelectedStates([])
         }
 
@@ -119,7 +121,9 @@ export default function DFAFromUI () {
             dfaBuilder.current.addEdge(edgeFrom, edgeTo, charToMatch);
             setEdges([...edges, [edgeFrom,edgeTo, charToMatch]])
             cleanForm();
-        } catch(err) {} // ignore errors from creating edge, just stop next steps
+        } catch(err) {
+            // ignore errors from creating edge, just stop next steps
+        }
     }
     function addState() {
         const value = dfaBuilder.current.addState(isAcceptedState); 
@@ -132,10 +136,10 @@ export default function DFAFromUI () {
         setEdges(edges.filter(([eFrom, eTo, eCharacterMatched]) => from != eFrom || to != eTo || characterMatched != eCharacterMatched))
     }
 
-    function deleteState(state: string) {
-        dfaBuilder.current.deleteState(state);
-        setStates(states.filter((st) => st !== state))    
-    }
+    // function deleteState(state: string) {
+    //     dfaBuilder.current.deleteState(state);
+    //     setStates(states.filter((st) => st !== state))    
+    // }
 
     function checkIfValidDFA(states: State[]) {
         for(const state of states) {
