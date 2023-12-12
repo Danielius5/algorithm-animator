@@ -28,7 +28,6 @@ export default function DFAFromUI () {
     const [selectedStates, setSelectedStates] = useState<string[]>([])
 
     function handleClicksOnFSA(event: Event) {
-        event.preventDefault();
         //@ts-expect-error does not like types..
         const element: HTMLElement = event.target
 
@@ -36,12 +35,14 @@ export default function DFAFromUI () {
         const mermaidObj = findMermaidNodeObject(parents)
         const isElementCanvas = element.classList.contains("mermaid") && element.nodeName === "PRE"
         if (isElementCanvas) {
+            event.preventDefault();
             const isAccepting = confirm("Make it an accepting state?") ?? false
             const state = dfaBuilder.current.addState(isAccepting)
             setStates((currentStates) => [...currentStates, state])
             return
         }
         if (mermaidObj) {
+            event.preventDefault();
             const state = mermaidObj.id.match(/S[0-9]+/)![0]
             setSelectedStates((currentSelectedStates) => [...currentSelectedStates, state])
             return
@@ -50,7 +51,6 @@ export default function DFAFromUI () {
     }
 
     function disableContextMenu(event: Event) {
-        event.preventDefault()
     
         //@ts-expect-error does not like types..
         const element: HTMLElement = event.target
@@ -59,6 +59,7 @@ export default function DFAFromUI () {
         const mermaidObj = findMermaidNodeObject(parents)
 
         if (mermaidObj) {
+            event.preventDefault()
             const stateToDelete = extractStateFromElementId(mermaidObj.id)
             dfaBuilder.current.deleteState(stateToDelete)
             setStates((currentStates) => currentStates.filter((state) => state !== stateToDelete))
