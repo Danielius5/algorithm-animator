@@ -61,6 +61,24 @@ describe('Test DFA from UI', () => {
         })
     })
 
+    it('Does not allow creating edge without character matched', () => {
+        
+        cy.visit('/#/dfa-from-ui')
+
+        // Set up a state
+        cy.get('#select-state-type').select("no")
+        cy.get('#add-state-button').click()
+
+        // try to set up an edge without character matched
+        cy.get('#select-state-from').select("")
+        cy.get('#select-state-to').select("")
+        cy.get('#add-edge-button').click()
+
+        cy.on('window:alert', (str) => {
+            expect(str).to.equal('Cannot create an edge without matching character!')
+        })
+    })
+
     it('Allows deleting an edge', () => {
         
         cy.visit('/#/dfa-from-ui')

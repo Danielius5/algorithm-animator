@@ -15,7 +15,6 @@ export function Animate({states, goBack}:AnimateParams) {
     // min can be 0.5, max text length + 0.5
     // Use Math.floor for comparisons to get the current number
     const [currentLetter, setCurrentLetter] = useState<number>(0.5)
-    console.log(currentLetter)
     const [currentState, setCurrentState] = useState<string>("In Progress")
     const [currentStep, setCurrentStep] = useState<number>(0)
     const [text, setText] = useState<string>("");

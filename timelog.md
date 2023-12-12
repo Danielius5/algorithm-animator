@@ -75,3 +75,8 @@
 
 ### 10 Dec 2023
 * *3.0 hours* Fix deleting of edges, add UI e2e tests, fix unhandled errors 
+* *3.0 hours* Find a way to allow creating edges by clicking on nodes and entering the character to match
+
+### 11 Dec 2023
+* *0.5 hours* Improve stability of edge creation via clicks on states, sort error that allows creating edge without character 
+* *1.5 hours* Allow deletions via clicks 

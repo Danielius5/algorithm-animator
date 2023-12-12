@@ -20,3 +20,20 @@ table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
   }
+
+.selectedState {
+    font-size: 20px;
+}
+
+/* .node rect{
+    fill: white;
+    stroke: #000!important;
+} */
+.nodeLabel {
+    user-select: none!important;
+}
+
+.mermaid {
+    border: 1px solid black;
+    min-height: 100px;
+}

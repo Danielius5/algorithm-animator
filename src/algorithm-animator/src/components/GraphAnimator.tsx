@@ -77,7 +77,6 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
     
     if (text) {
         steps = getSteps(states, text);
-        console.log(steps)
         if (steps.length == 1) {
             setCurrentState("Rejected")
         }

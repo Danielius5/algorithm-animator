@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Animate } from "../components/Animate";
 import { EMPTY } from "../components/ENFABuildAnimator";
 import { GraphFromDFA } from "../components/GraphFromDFA";
@@ -6,8 +6,78 @@ import { MainNavbar } from "../components/Navbar";
 import { DFABuilder } from "../helpers/dfa_builder";
 import { State } from "../models/dfa";
 
+// Idea of iterating over parent elements taken and modified from here: https://stackoverflow.com/a/8729274
+function getParentElements(element: HTMLElement) {
+    let parent: HTMLElement | null = element;
+    const allParents = [];
+    while (parent) {
+        allParents.push(parent);
 
+        parent = parent.parentElement;
+    }
+    return allParents
+}
+
+function findMermaidNodeObject(elements: HTMLElement[]) {
+    return elements.find((element) => /flowchart-S[0-9]+-[0-9]+/.test(element.id))
+}
+function extractStateFromElementId(id: string) {
+    return id.match(/S[0-9]+/)![0]
+}
 export default function DFAFromUI () {
+    const [selectedStates, setSelectedStates] = useState<string[]>([])
+
+    function handleClicksOnFSA(event: Event) {
+        //@ts-expect-error does not like types..
+        const element: HTMLElement = event.target
+
+        const parents = getParentElements(element)
+        const mermaidObj = findMermaidNodeObject(parents)
+        const isElementCanvas = element.classList.contains("mermaid") && element.nodeName === "PRE"
+        if (isElementCanvas) {
+            event.preventDefault();
+            const isAccepting = confirm("Make it an accepting state?") ?? false
+            const state = dfaBuilder.current.addState(isAccepting)
+            setStates((currentStates) => [...currentStates, state])
+            return
+        }
+        if (mermaidObj) {
+            event.preventDefault();
+            const state = mermaidObj.id.match(/S[0-9]+/)![0]
+            setSelectedStates((currentSelectedStates) => [...currentSelectedStates, state])
+            return
+        }
+        
+    }
+
+    function disableContextMenu(event: Event) {
+    
+        //@ts-expect-error does not like types..
+        const element: HTMLElement = event.target
+    
+        const parents = getParentElements(element)
+        const mermaidObj = findMermaidNodeObject(parents)
+
+        if (mermaidObj) {
+            event.preventDefault()
+            const stateToDelete = extractStateFromElementId(mermaidObj.id)
+            dfaBuilder.current.deleteState(stateToDelete)
+            setStates((currentStates) => currentStates.filter((state) => state !== stateToDelete))
+            setEdges((edges) => edges.filter(([from, to, _]) => from !== stateToDelete && to !== stateToDelete))
+        }
+    }
+
+    useEffect(() => {         
+        window.addEventListener('click', handleClicksOnFSA);
+        document.addEventListener('contextmenu', disableContextMenu)
+
+        return () => {
+
+          window.removeEventListener('click', handleClicksOnFSA);
+          document.removeEventListener('contextmenu', disableContextMenu)
+        }
+    }, []);
+
 
     const [isAcceptedState, setIsAcceptedState] = useState<boolean>(false);
 
@@ -19,7 +89,25 @@ export default function DFAFromUI () {
     const [states, setStates] = useState<string[]>([])
     const [edges, setEdges] = useState<[string, string, string][]>([])
 
-    
+    useEffect(() => {
+        if (selectedStates.length == 2) {
+            try{
+                const charMatched = prompt("Desired character: ");
+                if (charMatched) {
+                    const edgeFrom = selectedStates[0]
+                    const edgeTo = selectedStates[1]
+
+                    dfaBuilder.current.addEdge(edgeFrom, edgeTo, charMatched)
+                    setEdges([...edges, [edgeFrom,edgeTo, charMatched]])
+                }
+            } catch(err) {
+                // ignore errors from creating edge, just stop next steps
+            } 
+            setSelectedStates([])
+        }
+
+    }, [selectedStates]);
+
     const [isValidDFA, setIsValidDFA] = useState<boolean | undefined>(undefined)
     const [animate, setAnimate] = useState<boolean>(false)
 
@@ -33,7 +121,9 @@ export default function DFAFromUI () {
             dfaBuilder.current.addEdge(edgeFrom, edgeTo, charToMatch);
             setEdges([...edges, [edgeFrom,edgeTo, charToMatch]])
             cleanForm();
-        } catch(err) {}
+        } catch(err) {
+            // ignore errors from creating edge, just stop next steps
+        }
     }
     function addState() {
         const value = dfaBuilder.current.addState(isAcceptedState); 
@@ -45,6 +135,11 @@ export default function DFAFromUI () {
         dfaBuilder.current.deleteEdge(from, to, characterMatched);
         setEdges(edges.filter(([eFrom, eTo, eCharacterMatched]) => from != eFrom || to != eTo || characterMatched != eCharacterMatched))
     }
+
+    // function deleteState(state: string) {
+    //     dfaBuilder.current.deleteState(state);
+    //     setStates(states.filter((st) => st !== state))    
+    // }
 
     function checkIfValidDFA(states: State[]) {
         for(const state of states) {
@@ -119,7 +214,7 @@ export default function DFAFromUI () {
                     </div>
 
                     <div>
-                        <GraphFromDFA states={dfaBuilder.current.states} />
+                        <GraphFromDFA states={dfaBuilder.current.states} selectedStates={selectedStates}/>
                     </div>
                     { isValidDFA == undefined ? (
                         <input type="button" onClick={() => setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states))} value = "Check if valid DFA" />

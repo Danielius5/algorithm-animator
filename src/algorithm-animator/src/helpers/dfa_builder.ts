@@ -22,6 +22,10 @@ export class DFABuilder {
     }
 
     addEdge(from: string, to: string, characterMatched: string | undefined) {
+        if (!characterMatched) {
+            alert("Cannot create an edge without matching character!")
+            throw new Error()
+        }
         const fromNode = this.states.find((value) => value.value == from);
         const toNode = this.states.find((value) => value.value == to);
         if (!fromNode || !toNode) {
@@ -47,5 +51,11 @@ export class DFABuilder {
             throw new Error("Edge does not exist")
         }
         fromNode.transitions = fromNode.transitions.filter((value) => !(value.stateTo.value == to && value.characterMatched == characterMatched))
+    }
+    deleteState(s:string) {
+        this.states = this.states.filter((state)=> state.value !== s)
+        this.states.forEach((_, index) => {
+            this.states[index].transitions = this.states[index].transitions.filter((transition) =>transition.stateTo.value !== s)
+        })
     }
 }

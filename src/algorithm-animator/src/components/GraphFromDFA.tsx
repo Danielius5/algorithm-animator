@@ -25,7 +25,7 @@ function Mermaid({graph}: MermaidParams) {
   } 
 
 
-function recursiveAppendGraph(graph: string[], state: State, visited: Set<string>) {
+function recursiveAppendGraph(graph: string[], state: State, visited: Set<string>, selectedStates: string[]) {
   if (visited.has(state.value)) {
     return;
   }
@@ -35,7 +35,9 @@ function recursiveAppendGraph(graph: string[], state: State, visited: Set<string
   if (state.active) {
     graph.push(`\n  ${state.value}:::currentState`)
   }
-
+  if (selectedStates.includes(state.value)){
+    graph.push(`\n  ${state.value}:::selectedState`)
+  }
   graph.push(`\n  ${state.value}`)
   visited.add(state.value)
   const transitionsToCharacters:Record<string, string[]> = {}
@@ -52,7 +54,7 @@ function recursiveAppendGraph(graph: string[], state: State, visited: Set<string
       isTransitionAdded[key] = false
       isTransitionActive[key] = transition.active ?? false
     }
-    recursiveAppendGraph(graph, transition.stateTo, visited);
+    recursiveAppendGraph(graph, transition.stateTo, visited, selectedStates);
   }
 
   Object.entries(transitionsToCharacters).map(([states, characters]) => {
@@ -72,12 +74,16 @@ function recursiveAppendGraph(graph: string[], state: State, visited: Set<string
 
 interface GraphFromDFAParams {
   states: State[]
+  selectedStates?: string[]
 }
-export function GraphFromDFA({states}:GraphFromDFAParams) {
+export function GraphFromDFA({states, selectedStates}:GraphFromDFAParams) {
     const visited = new Set<string>();
     const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
+    if (states.length > 0) {
+      graph.push(`\n  START --> ${states[0].value}`)
+    }
     for(const state of states) {
-      recursiveAppendGraph(graph, state, visited);
+      recursiveAppendGraph(graph, state, visited, selectedStates ?? []);
     }
     const key = Math.random(); // intentional full recreation.
     return (

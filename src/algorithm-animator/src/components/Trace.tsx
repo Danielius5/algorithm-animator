@@ -22,7 +22,6 @@ export function Trace({text, current, state} : TraceParams) {
     if (text) {
         letters = buildText(textWithEmpty, current);
     }
-    console.log(letters)
     return (
         <>
             <br/>
