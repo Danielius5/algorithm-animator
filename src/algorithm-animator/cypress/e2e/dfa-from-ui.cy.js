@@ -20,7 +20,7 @@ describe('Test DFA from UI', () => {
         cy.get('#input-character-matched').type("b")
         cy.get('#add-edge-button').click()
 
-        cy.get('.edgePaths path').should('have.length', 1)
+        cy.get('.edgePaths path').should('have.length', 2)
     })
 
     it('Does not allow creating identical edges', () => {
@@ -96,7 +96,7 @@ describe('Test DFA from UI', () => {
         cy.get("#S1S1a")
         cy.get("#S1S1a-delete-button").click()
 
-        cy.get('.edgePaths path').should('have.length', 0);
-        cy.get('.nodes').should('have.length', 1)
+        cy.get('.edgePaths path').should('have.length', 1);
+        cy.get('.node').should('have.length', 2) // includes START node
     })
 })
