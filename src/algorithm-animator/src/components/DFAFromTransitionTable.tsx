@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { State } from "../models/dfa";
 
 interface DFAFromTransitionTableParams {
+    nfaStates: State[]
     DFATransitionTable: Set<string>[][];
     NFATransitionTable: Set<string>[][];
     setStates: Dispatch<SetStateAction<State[]>>
@@ -36,10 +37,19 @@ function isFailingState(state: Set<string>) {
     return [...state].length == 0
 }
 const INF = 100000;
-function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], language: string[], finalState: string) {
+function isStateFinal(states: Set<string>, finalStates: string[]) {
+    let result = false;
+    finalStates.forEach((finalState) => {
+        if(states.has(finalState)) {
+            result = true;
+        }
+    })
+    return result
+}
+function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], language: string[], finalStates: string[]) {
     const baseState = DFATransitionTable[1][0]
     const states: Set<string>[] = [baseState]
-    const isFinalState: boolean[] = [baseState.has(finalState)]
+    const isFinalState: boolean[] = [isStateFinal(baseState, finalStates)]
     const transitions:[string, number, number][] = []
 
     let table = DFATransitionTable.slice(1)
@@ -58,7 +68,7 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
             if(!isExistingState(cell, states)) {
                 if ([...cell].length != 0) {
                     states.push(cell)
-                    isFinalState.push(cell.has(finalState))
+                    isFinalState.push(isStateFinal(cell, finalStates))
                 }
             }
 
@@ -91,7 +101,7 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
 
     // dfaBuilder.addEdge("START", "S1", EMPTY)
 }
-export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitionTable, NFATransitionTable, setStates, states}: DFAFromTransitionTableParams) {
+export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitionTable, setStates, states, nfaStates}: DFAFromTransitionTableParams) {
     if (DFATransitionTable[1] === undefined) {
         return
     }
@@ -99,8 +109,13 @@ export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitio
         if (states.length == 0) {
             const language = langWithEpsillon.filter((c) => c!= EMPTY)
             const dfaBuilder = new DFABuilder()
-            const finalState = [...NFATransitionTable[NFATransitionTable.length - 1][0]][0]
-            buildDFA(dfaBuilder, DFATransitionTable, language, finalState)
+            const finalStates: string[] = []
+            nfaStates.forEach((nfaState) => {
+                if (nfaState.isAccepted) {
+                    finalStates.push(nfaState.value)
+                }
+            })
+            buildDFA(dfaBuilder, DFATransitionTable, language, finalStates)
             setStates(dfaBuilder.states)
         }
     });

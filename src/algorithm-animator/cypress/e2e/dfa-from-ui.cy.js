@@ -3,6 +3,7 @@ describe('Test DFA from UI', () => {
     // TODO: allows creating non-accepting state
     // TODO: allows creating accepting state
     // TODO: allows deleting state
+    // TODO: allows animating
     it('Checks that two edges between same states get merged into one', () => {
         cy.visit('/#/dfa-from-ui')
 
@@ -98,5 +99,40 @@ describe('Test DFA from UI', () => {
 
         cy.get('.edgePaths path').should('have.length', 1);
         cy.get('.node').should('have.length', 2) // includes START node
+    })
+
+    it('Allows converting NFA to DFA', () => {
+        
+        cy.visit('/#/dfa-from-ui')
+
+        // Set up NFA with 2 transitions matching "a", 2 transitions matching "b" and 1 transition matching c
+        for (let i = 0; i < 6; i++) {
+            cy.get('#select-state-type').select("no")
+            cy.get('#add-state-button').click()
+        }
+        const edges = [
+            ["S1", "S2", "a"],
+            ["S1", "S3", "a"],
+            ["S1", "S4", "b"],
+            ["S1", "S5", "b"],
+            ["S1", "S6", "c"],
+        ]
+        for (const [from, to, character] of edges) {
+            cy.get('#select-state-from').select(from)
+            cy.get('#select-state-to').select(to)
+            cy.get('#input-character-matched').type(character)
+            cy.get('#add-edge-button').click()
+        }
+        cy.get("#check-if-dfa-button").click()
+        cy.get("#change-to-e-nfa-button").click()
+
+        cy.get('.node').should('have.length', 11) //check ∈-NFA was built so states added
+
+        cy.get("#build-from-e-nfa-button").click()
+
+        // cy.get('#animate-dfa-from-regex-button').click()
+
+        // cy.get("#user-input-text-for-dfa").type("text")
+
     })
 })

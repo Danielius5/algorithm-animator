@@ -134,7 +134,7 @@ export default function DFAFromRegex() {
                                         {DFATransitionTable.length > 0 && (
                                             <>
                                                 <h2>Resultant DFA</h2>
-                                                <DFAFromTransitionTable DFATransitionTable={DFATransitionTableData} NFATransitionTable={NFATransitionTableData} language={language} setStates={setStatesDFA} states={statesDFA}/>
+                                                <DFAFromTransitionTable DFATransitionTable={DFATransitionTableData} NFATransitionTable={NFATransitionTableData} language={language} setStates={setStatesDFA} states={statesDFA} nfaStates={statesNFA}/>
                                             </>
                                         )}
                                         <input type="button" onClick={() => setAnimate(true)} value = "animate" id="animate-dfa-from-regex-button" />

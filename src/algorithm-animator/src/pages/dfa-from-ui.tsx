@@ -5,6 +5,8 @@ import { GraphFromDFA } from "../components/GraphFromDFA";
 import { MainNavbar } from "../components/Navbar";
 import { DFABuilder } from "../helpers/dfa_builder";
 import { State } from "../models/dfa";
+import { getAllPermutations } from "../helpers/permutations";
+import DFAFromENFA from "../components/DFAFromENFA";
 
 // Idea of iterating over parent elements taken and modified from here: https://stackoverflow.com/a/8729274
 function getParentElements(element: HTMLElement) {
@@ -109,6 +111,11 @@ export default function DFAFromUI () {
     }, [selectedStates]);
 
     const [isValidDFA, setIsValidDFA] = useState<boolean | undefined>(undefined)
+    const [showButtonNFAToENFA, setShowButtonNFAToENFA] = useState<boolean>(true)
+    const [buildDFA, setBuildDFA] = useState<boolean>(false)
+    const [statesDFA, setStatesDFA] = useState<State[]>([])
+
+
     const [animate, setAnimate] = useState<boolean>(false)
 
     const dfaBuilder = useRef<DFABuilder>(new DFABuilder())
@@ -158,23 +165,43 @@ export default function DFAFromUI () {
         return true;
     }
 
-    // function NFAToEpsillonNFA(states: State[]) {
-    //     for(const state of states) {
-    //         const transitionsByCharacter = new Map<string, State[]>()
-    //         for (const tr of state.transitions) {
-    //             if (tr.characterMatched) {
-    //                 const existingStates = transitionsByCharacter.get(tr.characterMatched) || []
-    //                 transitionsByCharacter.set(tr.characterMatched, [...existingStates, tr.stateTo])
-    //             }
-    //         }
-    //         transitionsByCharacter.forEach((states, character) => {
-    //         // if () {
-                
-    //         // }
-    //         })
-    //     }
+    function NFAToEpsilonNFA() {
+        const newStates = states
+        let newEdges = edges
+        for(const state of dfaBuilder.current.states) {
+            const transitionsByCharacter: Record<string, string[]> = {}
+            for (const tr of state.transitions) {
+                if (tr.characterMatched) {
+                    const existingStates = transitionsByCharacter[tr.characterMatched] || []
+                    transitionsByCharacter[tr.characterMatched] = [...existingStates, tr.stateTo.value]
+                }
+            }
+            const permutations: [string, string][][] = []
+            getAllPermutations(Object.entries(transitionsByCharacter), 0, [], permutations)
+            console.log(permutations, transitionsByCharacter)
+            if (permutations.length > 1) {
+                state.transitions = []
+                newEdges = newEdges.filter(([from, _, __]) => from !== state.value)
 
-    // }
+                for(const permutation of permutations) {
+                    const newStateValue = dfaBuilder.current.addState(false)
+                    dfaBuilder.current.addEdge(state.value, newStateValue, EMPTY)
+                    newStates.push(newStateValue)
+
+                    // move existing transitions to new state
+                    for (const [character, stateTo] of permutation) {
+                        dfaBuilder.current.addEdge(newStateValue, stateTo, character)
+                        newEdges.push([newStateValue, stateTo, character])
+                    }
+                }
+
+
+            }
+
+        }
+        setStates(newStates)
+        setEdges(newEdges)
+    }
     return (
         <div>
             <MainNavbar />
@@ -217,7 +244,7 @@ export default function DFAFromUI () {
                         <GraphFromDFA states={dfaBuilder.current.states} selectedStates={selectedStates}/>
                     </div>
                     { isValidDFA == undefined ? (
-                        <input type="button" onClick={() => setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states))} value = "Check if valid DFA" />
+                        <input id="check-if-dfa-button" type="button" onClick={() => setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states))} value = "Check if valid DFA" />
                         ) : (isValidDFA ? (
                             <>
                             Deterministic
@@ -225,13 +252,29 @@ export default function DFAFromUI () {
                             </>
                             
                         ) : (
-                            <>Non-deterministic</>
+                            <>
+                                Non-deterministic <br/>
+                                {showButtonNFAToENFA ? (
+                                    <input id="change-to-e-nfa-button" type="button" onClick={() => {NFAToEpsilonNFA(); setShowButtonNFAToENFA(false)}} value = "Change to ∈-NFA" />
+                                ) : (
+                                        <> {!buildDFA ? (
+                                            <input id="build-from-e-nfa-button" type="button" onClick={() => setBuildDFA(true)} value = "Build DFA from ∈-NFA" />
+                                        ) : (
+                                            <DFAFromENFA statesNFA={dfaBuilder.current.states} setAnimate={setAnimate} statesDFA={statesDFA} setStatesDFA={setStatesDFA}/>
+                                        )}
+                                    </>
+                                )}
+                                
+                            </>
                         ))
                     }
                         
                 </>
             ) : (
-                <Animate states={dfaBuilder.current.states} goBack={() => setAnimate(false)}/>
+                <>
+                    {statesDFA.length > 0 && <Animate states={statesDFA} goBack={() => setAnimate(false)}/>}
+                    {statesDFA.length == 0 && <Animate states={dfaBuilder.current.states} goBack={() => setAnimate(false)}/>}
+                </>
             ) }
     </div>
     )}
