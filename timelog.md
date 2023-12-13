@@ -80,3 +80,6 @@
 ### 11 Dec 2023
 * *0.5 hours* Improve stability of edge creation via clicks on states, sort error that allows creating edge without character 
 * *1.5 hours* Allow deletions via clicks 
+
+## 12 Dec 2023
+* *4 hours* Allow NFA -> ∈-NFA conversion from user input
