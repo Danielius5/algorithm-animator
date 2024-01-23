@@ -82,8 +82,8 @@ export default function DFAFromRegex() {
         <br/>
         {!animate ? (
             <>
-                <input onChange={(e) => {setRegex(e.target.value); unsubmit()}} value={regex} id="regex-input"/>
-                <input type="button" onClick={() => setSubmit(true)} value="build dfa" id="regex-build-dfa-button" />
+                <input onChange={(e) => {setRegex(e.target.value); unsubmit()}} value={regex} id="regex-input" placeholder="Enter RegEx:"/>
+                <input type="button" onClick={() => setSubmit(true)} value="Build DFA" id="regex-build-dfa-button" />
                 {submit && (
                     <>
                         <h2>

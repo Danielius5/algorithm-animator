@@ -4,11 +4,12 @@ import { useEffect, useState } from "react"
 
 interface MermaidParams {
     graph: string
+    isLarge?: boolean
 }
 mermaid.initialize({ startOnLoad: true})
 
 
-function Mermaid({graph}: MermaidParams) {
+function Mermaid({graph, isLarge}: MermaidParams) {
     const [loaded, setLoaded] = useState(false)
   
     useEffect(() => {
@@ -18,7 +19,7 @@ function Mermaid({graph}: MermaidParams) {
   
     return (
   
-    <pre className={`mermaid ${!loaded ? "invisible" : ""}`} style={{width: "100%"}}>
+    <pre className={`mermaid ${!loaded ? "invisible" : ""} ${isLarge? "mermaid-large" : ""}`} style={{width: "100%"}}>
       {graph}
     </pre>
   )
@@ -75,8 +76,9 @@ function recursiveAppendGraph(graph: string[], state: State, visited: Set<string
 interface GraphFromDFAParams {
   states: State[]
   selectedStates?: string[]
+  isLarge?: boolean
 }
-export function GraphFromDFA({states, selectedStates}:GraphFromDFAParams) {
+export function GraphFromDFA({states, selectedStates, isLarge}:GraphFromDFAParams) {
     const visited = new Set<string>();
     const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
     if (states.length > 0) {
@@ -87,7 +89,7 @@ export function GraphFromDFA({states, selectedStates}:GraphFromDFAParams) {
     }
     const key = Math.random(); // intentional full recreation.
     return (
-      <Mermaid graph={graph.join("")} key={key}></Mermaid>
+      <Mermaid graph={graph.join("")} key={key} isLarge={isLarge}></Mermaid>
     )
 }
 

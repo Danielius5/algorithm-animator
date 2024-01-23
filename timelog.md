@@ -83,3 +83,6 @@
 
 ## 12 Dec 2023
 * *4 hours* Allow NFA -> ∈-NFA conversion from user input
+
+## 23 Dec 2023
+* *3.5 hours* Experimenting / Improving UI 
