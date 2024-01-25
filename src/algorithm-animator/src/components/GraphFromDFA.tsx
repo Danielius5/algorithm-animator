@@ -79,6 +79,7 @@ interface GraphFromDFAParams {
   isLarge?: boolean
 }
 export function GraphFromDFA({states, selectedStates, isLarge}:GraphFromDFAParams) {
+
     const visited = new Set<string>();
     const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
     if (states.length > 0) {
@@ -87,9 +88,9 @@ export function GraphFromDFA({states, selectedStates, isLarge}:GraphFromDFAParam
     for(const state of states) {
       recursiveAppendGraph(graph, state, visited, selectedStates ?? []);
     }
-    const key = Math.random(); // intentional full recreation.
+
     return (
-      <Mermaid graph={graph.join("")} key={key} isLarge={isLarge}></Mermaid>
+      <Mermaid graph={graph.join("")} key={graph.join("").length} isLarge={isLarge}></Mermaid>
     )
 }
 

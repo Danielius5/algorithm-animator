@@ -89,3 +89,4 @@
 
 ## 25 Dec 2023
 * *4 hours* Further improving UI / wrestling with routing...
+* *1 hour* Reduce number of state refreshes, improve animation

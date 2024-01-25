@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { State, Step } from "../models/dfa";
 import { GraphFromDFA } from "./GraphFromDFA";
+import { AnimationState } from "./Trace";
 
 interface GraphAnimatorParams {
     states: State[]
@@ -8,7 +9,7 @@ interface GraphAnimatorParams {
     currentLetter: number;
     currentStep: number;
     setCurrentLetter: Dispatch<SetStateAction<number>>
-    setCurrentState: Dispatch<SetStateAction<string>>
+    setCurrentState: Dispatch<SetStateAction<AnimationState>>
     setCurrentStep: Dispatch<SetStateAction<number>>
   }
 
@@ -64,13 +65,13 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
             const finalStep = steps[currentStep];
             // @ts-expect-error cannot avoid guessing which type of step this is - transition or state
             if(finalStep.isAccepted && Math.floor(nextLetterState) == text.length){
-                setCurrentState("Accepted")
+                setCurrentState(AnimationState.ACCEPTED)
             }
-            else {setCurrentState("Rejected")}
+            else {setCurrentState(AnimationState.REJECTED)}
             // if (typeof finalStep === "State")
         }
         else {
-            setCurrentState("In Progress")
+            setCurrentState(AnimationState.IN_PROGRESS)
         }
         setCurrentLetter(nextLetterState);
     }, [currentStep]);
@@ -78,7 +79,7 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
     if (text) {
         steps = getSteps(states, text);
         if (steps.length == 1) {
-            setCurrentState("Rejected")
+            setCurrentState(AnimationState.REJECTED)
         }
     }
     setActiveStep(states[0], steps[currentStep], visited);

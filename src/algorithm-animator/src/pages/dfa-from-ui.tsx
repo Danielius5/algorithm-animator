@@ -40,8 +40,7 @@ export default function DFAFromUI() {
         const isElementCanvas = element.classList.contains("mermaid") && element.nodeName === "PRE"
         if (isElementCanvas) {
             event.preventDefault();
-            const isAccepting = confirm("Make it an accepting state?") ?? false
-            const state = dfaBuilder.current.addState(isAccepting)
+            const state = dfaBuilder.current.addState(false)
             setStates((currentStates) => [...currentStates, state])
             return
         }
@@ -67,6 +66,11 @@ export default function DFAFromUI() {
             event.preventDefault()
             const stateToDelete = extractStateFromElementId(mermaidObj.id)
             deleteState(stateToDelete)
+        }
+        else {
+            event.preventDefault();
+            const state = dfaBuilder.current.addState(true)
+            setStates((currentStates) => [...currentStates, state])
         }
     }
 
@@ -102,12 +106,15 @@ export default function DFAFromUI() {
         if (selectedStates.length == 2) {
             try {
                 const charMatched = prompt("Desired character: ");
-                if (charMatched) {
+                if (charMatched && charMatched.length==1) {
                     const edgeFrom = selectedStates[0]
                     const edgeTo = selectedStates[1]
 
                     dfaBuilder.current.addEdge(edgeFrom, edgeTo, charMatched)
                     setEdges([...edges, [edgeFrom, edgeTo, charMatched]])
+                }
+                else if (!charMatched || charMatched.length!=1) {
+                    alert("Character matched needs to be of length 1!")
                 }
             } catch (err) {
                 // ignore errors from creating edge, just stop next steps
