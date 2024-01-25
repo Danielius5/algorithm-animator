@@ -53,7 +53,7 @@ function recursiveAppendGraph(graph: string[], state: State, visited: Set<string
       }
       transitionsToCharacters[key].push(transition.characterMatched)
       isTransitionAdded[key] = false
-      isTransitionActive[key] = transition.active ?? false
+      isTransitionActive[key] = isTransitionActive[key] || (transition.active ?? false)
     }
     recursiveAppendGraph(graph, transition.stateTo, visited, selectedStates);
   }
