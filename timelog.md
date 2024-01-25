@@ -86,3 +86,6 @@
 
 ## 23 Dec 2023
 * *3.5 hours* Experimenting / Improving UI 
+
+## 25 Dec 2023
+* *4 hours* Further improving UI / wrestling with routing...

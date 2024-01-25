@@ -18,7 +18,7 @@ const router = createHashRouter([
   },
   {
     path: "/dfa-from-ui",
-    element:<DFAFromUI />,
+    element:<DFAFromUI key={Math.random()} />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -26,10 +26,12 @@ function findMermaidNodeObject(elements: HTMLElement[]) {
 function extractStateFromElementId(id: string) {
     return id.match(/S[0-9]+/)![0]
 }
-export default function DFAFromUI () {
+export default function DFAFromUI() {
     const [selectedStates, setSelectedStates] = useState<string[]>([])
 
     function handleClicksOnFSA(event: Event) {
+        if (isReadOnlyRef.current) return;
+
         //@ts-expect-error does not like types..
         const element: HTMLElement = event.target
 
@@ -49,14 +51,15 @@ export default function DFAFromUI () {
             setSelectedStates((currentSelectedStates) => [...currentSelectedStates, state])
             return
         }
-        
+
     }
 
     function handleStateDeletions(event: Event) {
-    
+        if (isReadOnlyRef.current) return;
+
         //@ts-expect-error does not like types..
         const element: HTMLElement = event.target
-    
+
         const parents = getParentElements(element)
         const mermaidObj = findMermaidNodeObject(parents)
 
@@ -67,20 +70,26 @@ export default function DFAFromUI () {
         }
     }
 
-    useEffect(() => {         
+    useEffect(() => {
         window.addEventListener('click', handleClicksOnFSA);
         document.addEventListener('contextmenu', handleStateDeletions)
 
         return () => {
 
-          window.removeEventListener('click', handleClicksOnFSA);
-          document.removeEventListener('contextmenu', handleStateDeletions)
+            window.removeEventListener('click', handleClicksOnFSA);
+            document.removeEventListener('contextmenu', handleStateDeletions)
         }
     }, []);
 
 
     const [isAcceptedState, setIsAcceptedState] = useState<boolean>(false);
+    const [isReadOnly, _setIsReadOnly] = useState<boolean>(false);
+    const isReadOnlyRef = useRef(isReadOnly);
 
+    const setIsReadOnly = (value:boolean) => {
+        isReadOnlyRef.current = value
+        _setIsReadOnly(value)
+    } 
 
     const [edgeFrom, setEdgeFrom] = useState<string>("");
     const [edgeTo, setEdgeTo] = useState<string>("");
@@ -91,18 +100,18 @@ export default function DFAFromUI () {
 
     useEffect(() => {
         if (selectedStates.length == 2) {
-            try{
+            try {
                 const charMatched = prompt("Desired character: ");
                 if (charMatched) {
                     const edgeFrom = selectedStates[0]
                     const edgeTo = selectedStates[1]
 
                     dfaBuilder.current.addEdge(edgeFrom, edgeTo, charMatched)
-                    setEdges([...edges, [edgeFrom,edgeTo, charMatched]])
+                    setEdges([...edges, [edgeFrom, edgeTo, charMatched]])
                 }
-            } catch(err) {
+            } catch (err) {
                 // ignore errors from creating edge, just stop next steps
-            } 
+            }
             setSelectedStates([])
         }
 
@@ -122,16 +131,16 @@ export default function DFAFromUI () {
         setCharToMatch("");
     }
     function addEdge() {
-        try{
+        try {
             dfaBuilder.current.addEdge(edgeFrom, edgeTo, charToMatch);
-            setEdges([...edges, [edgeFrom,edgeTo, charToMatch]])
+            setEdges([...edges, [edgeFrom, edgeTo, charToMatch]])
             cleanForm();
-        } catch(err) {
+        } catch (err) {
             // ignore errors from creating edge, just stop next steps
         }
     }
     function addState() {
-        const value = dfaBuilder.current.addState(isAcceptedState); 
+        const value = dfaBuilder.current.addState(isAcceptedState);
         setStates([...states, value])
         cleanForm();
     }
@@ -144,14 +153,30 @@ export default function DFAFromUI () {
     function deleteState(state: string) {
         dfaBuilder.current.deleteState(state)
         setStates((currentStates) => currentStates.filter((state) => state !== state))
-        setEdges((edges) => edges.filter(([from, to, _]) => from !== state && to !== state))  
+        setEdges((edges) => edges.filter(([from, to, _]) => from !== state && to !== state))
     }
+    const sortEdges = (a:[string,string,string], b: [string,string,string]) => {
+        const [from1, to1, char1] = a;
+        const [from2, to2, char2] = b;
 
+        const from1No = parseInt(from1.match(/[0-9]+/)![0])
+        const from2No = parseInt(from2.match(/[0-9]+/)![0])
+        const to1No   = parseInt(to1.match(/[0-9]+/)![0])
+        const to2No   = parseInt(to2.match(/[0-9]+/)![0])
+        
+        const key1 = from1No * 1000 + to1No
+        const key2 = from2No * 1000 + to2No
+
+        if (key1 != key2) 
+            return key1 - key2;
+
+        return char1.localeCompare(char2);
+    }
     function checkIfValidDFA(states: State[]) {
-        for(const state of states) {
+        for (const state of states) {
             const transitionsByCharacter = new Set()
             for (const tr of state.transitions) {
-                if (transitionsByCharacter.has(tr.characterMatched)){
+                if (transitionsByCharacter.has(tr.characterMatched)) {
                     return false; // 2 transitions with same character - non deterministic
                 }
                 if (tr.characterMatched == EMPTY) {
@@ -167,7 +192,7 @@ export default function DFAFromUI () {
     function NFAToEpsilonNFA() {
         const newStates = states
         let newEdges = edges
-        for(const state of dfaBuilder.current.states) {
+        for (const state of dfaBuilder.current.states) {
             const transitionsByCharacter: Record<string, string[]> = {}
             for (const tr of state.transitions) {
                 if (tr.characterMatched) {
@@ -182,7 +207,7 @@ export default function DFAFromUI () {
                 state.transitions = []
                 newEdges = newEdges.filter(([from, _, __]) => from !== state.value)
 
-                for(const permutation of permutations) {
+                for (const permutation of permutations) {
                     const newStateValue = dfaBuilder.current.addState(false)
                     dfaBuilder.current.addEdge(state.value, newStateValue, EMPTY)
                     newStates.push(newStateValue)
@@ -204,34 +229,47 @@ export default function DFAFromUI () {
     return (
         <div>
             <MainNavbar />
-            <br/>
+            <br />
             {!animate ? (
                 <>
                     <div className="container-fluid">
                         <div className="row">
-                            <div className="col-md-2 p-1">
-                                <div className="mb-4">
-                                    <h4>Add a State:</h4>
-                                    <div className="form-check form-switch mb-3">
-                                        <input className="form-check-input" role="switch" type="checkbox" checked={isAcceptedState} onChange={() => setIsAcceptedState(!isAcceptedState)} id="is-accepting-select"/>
-                                        <label className="form-check-label" htmlFor="is-accepting-select"> Is the state accepting?</label>
+                            <div className="col-lg-3">
+                                <h4>Add a State:</h4>
+                                <div className="container-fluid">
+                                    <div className="row">
+                                        <div className="col-9">
+                                            <div className="form-check form-switch mb-3">
+                                                <input className="form-check-input" role="switch" type="checkbox" checked={isAcceptedState} disabled={isReadOnly} onChange={() => setIsAcceptedState(!isAcceptedState)} id="is-accepting-select" />
+                                                <label className="form-check-label" htmlFor="is-accepting-select"> Accepting?</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-3  px-1">
+                                            <input className="btn btn-primary btn-sm form-control" type="button" disabled={isReadOnly} onClick={() => addState()} value="Add" id="add-state-button" />
+                                        </div>
                                     </div>
-                                    <input className="btn btn-primary btn-sm" type="button" onClick={() => addState()} value="Add State" id="add-state-button"/>
-
-                                    <h4>States:</h4>
-                                    {dfaBuilder.current.states.map((state) => {
-                                        return <div key={state.value} id={`state-${state.value}`}>{state.value} <button className="btn btn-danger btn-xs" onClick={() => deleteState(state.value)} id={`${state}-state-delete-button`}>DELETE</button></div>
-                                    })}
                                 </div>
-                                <div className="mb-4 mt-2">                                    
+
+                                <div className="mb-4">
                                     <h4>Add an Edge:</h4>
                                     <div className="container-fluid">
                                         <div className="row">
-                                            <div className="col-4 p-0">
+                                            <div className="col-3 p-0 text-center">
+                                                <label className="form-label" htmlFor="select-state-from">From:</label>
+                                            </div>
+                                            <div className="col-3 p-0 text-center">
+                                                <label className="form-label" htmlFor="select-state-to">To:</label>
+                                            </div>
+                                            <div className="col-3 p-0 text-center">
+                                                <label className="form-label" htmlFor="input-character-matched">Char:</label>
+                                            </div>
+                                            <div className="col-3 p-0"></div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-3 px-1">
                                                 <div className="mb-1">
-                                                    <label className="form-label" htmlFor="select-state-from">From:</label>
-                                                    <select className="form-select form-select-sm" onChange={(obj) => setEdgeFrom(obj.target.value)} id="select-state-from">
-                                                        <option value = "">---</option>
+                                                    <select className="form-select form-select-sm" disabled={isReadOnly} onChange={(obj) => setEdgeFrom(obj.target.value)} id="select-state-from">
+                                                        <option value="">---</option>
                                                         {states.map((state) => {
                                                             return <option value={state} key={state}>{state}</option>
                                                         })}
@@ -239,77 +277,90 @@ export default function DFAFromUI () {
                                                 </div>
                                             </div>
 
-                                            <div className="col-4 p-0">
+                                            <div className="col-3 px-1">
                                                 <div className="mb-1">
-                                                    <label className="form-label" htmlFor="select-state-to">To:</label>
-                                                    <select className="form-select form-select-sm" defaultValue={edgeFrom} onChange={(obj) => setEdgeTo(obj.target.value)} id="select-state-to">
-                                                        <option value = "">---</option>
+                                                    <select className="form-select form-select-sm" disabled={isReadOnly} defaultValue={edgeFrom} onChange={(obj) => setEdgeTo(obj.target.value)} id="select-state-to">
+                                                        <option value="">---</option>
                                                         {states.map((state) => {
                                                             return <option value={state} key={state}>{state}</option>
                                                         })}
                                                     </select>
                                                 </div>
                                             </div>
-                                            
-                                            <div className="col-4 p-0">
+
+                                            <div className="col-3 px-1">
                                                 <div className="mb-3">
-                                                    <label className="form-label" htmlFor="input-character-matched">Character:</label>
-                                                    <input className="form-control form-control-sm" maxLength={1} value={charToMatch} type="text" onChange={(obj) => setCharToMatch(obj.target.value)} placeholder="Character" id="input-character-matched"/>
+                                                    <input className="form-control form-control-sm" maxLength={1} value={charToMatch} disabled={isReadOnly} type="text" onChange={(obj) => setCharToMatch(obj.target.value)} placeholder="" id="input-character-matched" />
+                                                </div>
+                                            </div>
+                                            <div className="col-3 px-1">
+                                                <div className="mb-3">
+                                                    <input className="btn btn-primary btn-sm form-control" type="button" disabled={isReadOnly} onClick={() => addEdge()} value="Add" id="add-edge-button" />
                                                 </div>
                                             </div>
                                         </div>
+                                        <div className="row sized-box">
+                                            <div className="col-4 px-0">
+                                                <h4>States:</h4>
+                                                {dfaBuilder.current.states.map((state) => {
+                                                    return <div key={state.value} id={`state-${state.value}`}>{state.value} <button disabled={isReadOnly} className="btn btn-danger btn-xs" onClick={() => deleteState(state.value)} id={`${state}-state-delete-button`}>DEL</button></div>
+                                                })}
+                                            </div>
+                                            <div className="col-8 px-0">
+                                                <h4>Edges:</h4>
+                                                {edges
+                                                .sort(sortEdges)
+                                                .map(([from, to, char]) => {
+                                                    return <div key={from + to + char} id={from + to + char}>{from} —{char}{'→'} {to} <button disabled={isReadOnly} className="btn btn-danger btn-xs" onClick={(el) => deleteEdge(from, to, char, el)} id={from + to + char + "-delete-button"}>DEL</button></div>
+                                                })}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="mb-1">
-                                        <input className="btn btn-primary btn-sm" type="button" onClick={() => addEdge()} value="Add Edge" id="add-edge-button"/>
-                                    </div>
-                                    <h4>Edges:</h4>
-                                    {edges.map(([from, to,char]) => {
-                                        return <div key={from + to + char} id={from + to + char}>{from} ---{'>'} {to}, {char} <button className="btn btn-danger btn-xs" onClick={(el) => deleteEdge(from, to, char, el)} id={from + to + char+ "-delete-button"}>DELETE</button></div>
-                                    })}
-                                </div>
-                                
-                                <div>
-                                    <h4>Finalise:</h4>
-                                    { isValidDFA == undefined ? (
-                                        <input className="btn btn-primary btn-sm" id="check-if-dfa-button" type="button" onClick={() => setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states))} value = "Check if valid DFA" />
-                                        ) : (isValidDFA ? (
-                                            <>
-                                            Deterministic
-                                            <input className="btn btn-primary btn-sm" type="button" onClick={() => setAnimate(true)} value = "animate" />
-                                            </>
-                                            
-                                        ) : (
-                                            <>
-                                                Non-deterministic <br/>
-                                                {showButtonNFAToENFA ? (
-                                                    <input className="btn btn-primary btn-sm" id="change-to-e-nfa-button" type="button" onClick={() => {NFAToEpsilonNFA(); setShowButtonNFAToENFA(false)}} value = "Change to ∈-NFA" />
-                                                ) : (
-                                                        <> {!buildDFA ? (
-                                                            <input className="btn btn-primary btn-sm" id="build-from-e-nfa-button" type="button" onClick={() => setBuildDFA(true)} value = "Build DFA from ∈-NFA" />
-                                                        ) : (
-                                                            <DFAFromENFA statesNFA={dfaBuilder.current.states} setAnimate={setAnimate} statesDFA={statesDFA} setStatesDFA={setStatesDFA}/>
-                                                        )}
-                                                    </>
-                                                )}
-                                                
-                                            </>
-                                        ))
-                                    }
+
                                 </div>
                             </div>
 
-                            <div className="col-md-10">
-                                <GraphFromDFA isLarge={true} states={dfaBuilder.current.states} selectedStates={selectedStates}/>
+                            <div className="col-lg-9">
+                                <GraphFromDFA isLarge={true} states={dfaBuilder.current.states} selectedStates={selectedStates} />
+                                <div>
+                                    <h4>Finalise:</h4>
+                                    {isValidDFA == undefined ? (
+                                        <input className="btn btn-primary btn-sm" id="check-if-dfa-button" type="button" onClick={() => {setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states)); setIsReadOnly(true);}} value="Check if valid DFA" />
+                                    ) : (isValidDFA ? (
+                                        <>
+                                            Type: Deterministic <br />
+                                            <input className="btn btn-primary btn-sm" type="button" onClick={() => setAnimate(true)} value="Animate" />
+                                        </>
+
+                                    ) : (
+                                        <>
+                                            Type: Non-deterministic <br />
+                                            {showButtonNFAToENFA ? (
+                                                <input className="btn btn-primary btn-sm" id="change-to-e-nfa-button" type="button" onClick={() => { NFAToEpsilonNFA(); setShowButtonNFAToENFA(false) }} value="Change to ∈-NFA" />
+                                            ) : (
+                                                <> {!buildDFA ? (
+                                                    <input className="btn btn-primary btn-sm" id="build-from-e-nfa-button" type="button" onClick={() => setBuildDFA(true)} value="Build DFA from ∈-NFA" />
+                                                ) : (
+                                                    <DFAFromENFA statesNFA={dfaBuilder.current.states} setAnimate={setAnimate} statesDFA={statesDFA} setStatesDFA={setStatesDFA} />
+                                                )}
+                                                </>
+                                            )}
+
+                                        </>
+                                    ))
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
-                        
+
                 </>
             ) : (
                 <>
-                    {statesDFA.length > 0 && <Animate states={statesDFA} goBack={() => setAnimate(false)}/>}
-                    {statesDFA.length == 0 && <Animate states={dfaBuilder.current.states} goBack={() => setAnimate(false)}/>}
+                    {statesDFA.length > 0 && <Animate states={statesDFA} goBack={() => setAnimate(false)} />}
+                    {statesDFA.length == 0 && <Animate states={dfaBuilder.current.states} goBack={() => setAnimate(false)} />}
                 </>
-            ) }
-    </div>
-    )}
+            )}
+        </div>
+    )
+}

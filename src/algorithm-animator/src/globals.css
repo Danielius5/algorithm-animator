@@ -39,7 +39,7 @@ table, th, td {
 }
 
 .mermaid-large {
-    height:90vh;
+    min-height:300px;
 }
 
 .btn-xs {
@@ -47,4 +47,9 @@ table, th, td {
     font-size: .875rem;
     line-height: .5;
     border-radius: .2rem;
+}
+
+.sized-box {
+    overflow-y: auto;
+    height:150px;
 }
