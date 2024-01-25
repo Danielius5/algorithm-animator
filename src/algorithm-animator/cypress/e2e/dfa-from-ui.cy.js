@@ -8,7 +8,6 @@ describe('Test DFA from UI', () => {
         cy.visit('/#/dfa-from-ui')
 
         // Set up a state
-        cy.get('#select-state-type').select("no")
         cy.get('#add-state-button').click()
 
         // set up first edge
@@ -29,7 +28,6 @@ describe('Test DFA from UI', () => {
         cy.visit('/#/dfa-from-ui')
 
         // Set up a state
-        cy.get('#select-state-type').select("no")
         cy.get('#add-state-button').click()
 
         // set up first edge
@@ -67,7 +65,6 @@ describe('Test DFA from UI', () => {
         cy.visit('/#/dfa-from-ui')
 
         // Set up a state
-        cy.get('#select-state-type').select("no")
         cy.get('#add-state-button').click()
 
         // try to set up an edge without character matched
@@ -85,7 +82,6 @@ describe('Test DFA from UI', () => {
         cy.visit('/#/dfa-from-ui')
 
         // Set up a state
-        cy.get('#select-state-type').select("no")
         cy.get('#add-state-button').click()
 
         // set up edge
@@ -107,7 +103,6 @@ describe('Test DFA from UI', () => {
 
         // Set up NFA with 2 transitions matching "a", 2 transitions matching "b" and 1 transition matching c
         for (let i = 0; i < 6; i++) {
-            cy.get('#select-state-type').select("no")
             cy.get('#add-state-button').click()
         }
         const edges = [
