@@ -364,8 +364,8 @@ export default function DFAFromUI() {
                 </>
             ) : (
                 <>
-                    {statesDFA.length > 0 && <Animate states={statesDFA} goBack={() => setAnimate(false)} />}
-                    {statesDFA.length == 0 && <Animate states={dfaBuilder.current.states} goBack={() => setAnimate(false)} />}
+                    {statesDFA.length > 0 && <Animate states={statesDFA} />}
+                    {statesDFA.length == 0 && <Animate states={dfaBuilder.current.states} />}
                 </>
             )}
         </div>

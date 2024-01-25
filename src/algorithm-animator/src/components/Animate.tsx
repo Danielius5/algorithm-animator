@@ -6,10 +6,9 @@ import { AnimationState, Trace } from "./Trace";
 
 interface AnimateParams {
     states: State[]
-    goBack: ()=> void
   }
 
-export function Animate({states, goBack}:AnimateParams) {
+export function Animate({states}:AnimateParams) {
     // TODO: write about this
     // use floor to only move to next letter once we have gone through both transition and state (add 0.5 on each)
     // min can be 0.5, max text length + 0.5

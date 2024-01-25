@@ -146,7 +146,7 @@ export default function DFAFromRegex() {
                 )}
             </>
         ) : (
-            <Animate states={statesDFA} goBack={() => setAnimate(false)}/>
+            <Animate states={statesDFA} />
         )}
         </>
     )
