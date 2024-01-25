@@ -37,3 +37,19 @@ table, th, td {
     border: 1px solid black;
     min-height: 100px;
 }
+
+.mermaid-large {
+    min-height:300px;
+}
+
+.btn-xs {
+    padding: .25rem .4rem;
+    font-size: .875rem;
+    line-height: .5;
+    border-radius: .2rem;
+}
+
+.sized-box {
+    overflow-y: auto;
+    height:150px;
+}
