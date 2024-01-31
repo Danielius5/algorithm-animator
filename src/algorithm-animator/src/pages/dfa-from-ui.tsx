@@ -328,7 +328,7 @@ export default function DFAFromUI() {
                             </div>
 
                             <div className="col-lg-9">
-                                <GraphFromDFA key={Math.random().toString()} id="g-dfa-from-ui" isLarge={true} states={dfaBuilder.current.states} selectedStates={selectedStates} />
+                                <GraphFromDFA id="g-dfa-from-ui" isLarge={true} states={dfaBuilder.current.states} selectedStates={selectedStates} />
                                 <div>
                                     <h4>Finalise:</h4>
                                     {isValidDFA == undefined ? (

@@ -96,3 +96,4 @@
 
 ## 31 Jan 2023
 * *1.5 hours* Work on documentation, small improvements
+* *2.5 hours* (again) Fixing issues of multiple graphs interfering with ach other 

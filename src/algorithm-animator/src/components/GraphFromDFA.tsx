@@ -1,5 +1,5 @@
 import { State } from "../models/dfa"
-import mermaid from 'mermaid'
+import mermaid, { RenderResult } from 'mermaid'
 import { useEffect, useState } from "react"
 
 interface MermaidParams {
@@ -9,57 +9,24 @@ interface MermaidParams {
     noHeight?: boolean
 }
 
-mermaid.initialize({startOnLoad: true})
-function MermaidStatic({graph, isLarge, noHeight, id}: MermaidParams) {
+  function Mermaid({graph, isLarge, noHeight, id}: MermaidParams) {
     // const [loaded, setLoaded] = useState(false)
-  
-    // useEffect(() => {
-    //   mermaid.contentLoaded()
-    //   // mermaid.render(id, graph)
-    //   setLoaded(true)
-    // }, [])
-
-    // useEffect(() => {
-    //   if(id) {
-    //     document.getElementById(id)?.removeAttribute("data-processed");
-    //   }
-    //   mermaid.contentLoaded();
-    // }, [graph, id]);
-
-    // const id = "graph_" + Math.floor(Math.random() * 1000).toString()
-
-
-    return (
-      <pre  id={id} className={`mermaid ${isLarge? "mermaid-large" : ""} ${noHeight? "no-height" : ""}`} style={{width: "100%"}}>
-        {graph}
-      </pre>
-    )
-  } 
-
-  function MermaidDynamic({graph, isLarge, noHeight, id}: MermaidParams) {
-    // const [loaded, setLoaded] = useState(false)
-  
-    // useEffect(() => {
-    //   mermaid.contentLoaded()
-    //   // mermaid.render(id, graph)
-    //   setLoaded(true)
-    // }, [])
-
+    const [render, setRender] = useState<undefined | RenderResult>(undefined);
     useEffect(() => {
-      if(id) {
-        document.getElementById(id)?.removeAttribute("data-processed");
+      const asyncChild = async () => {
+        const result = await mermaid.render(id, graph)
+        setRender(result)
       }
-      mermaid.contentLoaded();
-    }, [graph, id]);
-
-    // const id = "graph_" + Math.floor(Math.random() * 1000).toString()
+      asyncChild()
+    }, [])
 
 
-    return (
-      <pre  id={id} className={`mermaid ${isLarge? "mermaid-large" : ""} ${noHeight? "no-height" : ""}`} style={{width: "100%"}}>
-        {graph}
-      </pre>
-    )
+    if (render) {
+      return (
+
+        <pre className={`mermaid ${isLarge? "mermaid-large" : ""} ${noHeight? "no-height" : ""}`} style={{width: "100%"}} id={id} dangerouslySetInnerHTML={{__html: render.svg}}></pre>
+      )
+    }
   } 
 
 function recursiveAppendGraph(graph: string[], state: State, visited: Set<string>, selectedStates: string[]) {
@@ -115,9 +82,8 @@ interface GraphFromDFAParams {
   isLarge?: boolean
   noHeight?: boolean
   id: string
-  isStatic?: boolean
 }
-export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id, isStatic}:GraphFromDFAParams) {
+export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id}:GraphFromDFAParams) {
 
     const visited = new Set<string>();
     const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
@@ -128,13 +94,8 @@ export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id, isS
       recursiveAppendGraph(graph, state, visited, selectedStates ?? []);
     }
 
-    if(isStatic) {
-      return (
-        <MermaidStatic id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></MermaidStatic>
-      )
-    }
     return (
-      <MermaidDynamic id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></MermaidDynamic>
+      <Mermaid id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></Mermaid>
     )
 }
 

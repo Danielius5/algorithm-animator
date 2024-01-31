@@ -36,11 +36,11 @@ export default function Home() {
 
                 <h6 className="card-title">Non-Accepting State</h6>
                 <p className="card-text">If the DFA terminates at a non-accepting state <strong>S1</strong>, the sequence is rejected</p>
-                <GraphFromDFA isStatic={true} id="g1" states={[{ value: "S1", isAccepted: false, transitions: [] }]} noHeight />
+                <GraphFromDFA id="g1" states={[{ value: "S1", isAccepted: false, transitions: [] }]} noHeight />
 
                 <h6 className="card-title">Accepting State</h6>
                 <p className="card-text">If the DFA terminates at an accepting state <strong>S1</strong>, and the whole sequence has been matched, the sequence is accepted</p>
-                <GraphFromDFA isStatic={true} id="g2" states={[{ value: "S1", isAccepted: true, transitions: [] }]} noHeight />
+                <GraphFromDFA id="g2" states={[{ value: "S1", isAccepted: true, transitions: [] }]} noHeight />
               </div>
             </div>
           </div>
@@ -55,15 +55,15 @@ export default function Home() {
 
                 <h6 className="card-title">Single-Character transition</h6>
                 <p className="card-text">A transition that matches only one character</p>
-                <GraphFromDFA isStatic={true} id="g3" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [] } }] }, { value: "S2", isAccepted: false, transitions: [] }]} noHeight />
+                <GraphFromDFA id="g3" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [] } }] }, { value: "S2", isAccepted: false, transitions: [] }]} noHeight />
 
                 <h6 className="card-title">Multi-Character transition</h6>
                 <p className="card-text">A transition that matches multiple characters, but only <strong>only one at a time</strong></p>
-                <GraphFromDFA isStatic={true} id="g4" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [] } }, { characterMatched: "b", stateTo: { value: "S2", isAccepted: false, transitions: [] } }] }, { value: "S2", isAccepted: false, transitions: [] }]} noHeight />
+                <GraphFromDFA id="g4" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [] } }, { characterMatched: "b", stateTo: { value: "S2", isAccepted: false, transitions: [] } }] }, { value: "S2", isAccepted: false, transitions: [] }]} noHeight />
 
                 <h6 className="card-title">Self-loop transition</h6>
                 <p className="card-text">A transition that matches one or more characters between the same state, but only <strong>only one at a time</strong></p>
-                <GraphFromDFA isStatic={true} id="g5" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S1", isAccepted: false, transitions: [] } }, { characterMatched: "b", stateTo: { value: "S1", isAccepted: false, transitions: [] } }] }]} noHeight />
+                <GraphFromDFA id="g5" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S1", isAccepted: false, transitions: [] } }, { characterMatched: "b", stateTo: { value: "S1", isAccepted: false, transitions: [] } }] }]} noHeight />
 
               </div>
             </div>
@@ -77,7 +77,7 @@ export default function Home() {
               </div>
               <div className="card-body">
                 <p className="card-text">
-                  There are three types of Finite Automata you will see in this web application
+                  There are three types of Finite Automata you will see in this web application. All of these are equivalent and recognise <strong>aa*b</strong>.
                   <div className="row mt-3">
                     <div className="col-4">
                       <div className="card">
@@ -86,9 +86,9 @@ export default function Home() {
                         </div>
                         <div className="card-body">
                           <p className="card-text">
-                            In this type of finite automaton, there can be multiple transitions outgoing from the same state with the same character that is being matched. It is non-deterministic because there is more than one path to match the string which allows a choice.
+                            In this type of finite automaton, there can be multiple transitions outgoing from the same state with the same character that is being matched. It is non-deterministic because there is more than one path to match the character which allows a choice.
                           </p>
-                          <GraphFromDFA isStatic={true} id="g6" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [] } }, { characterMatched: "a", stateTo: { value: "S3", isAccepted: false, transitions: [{ characterMatched: "b", stateTo: { value: "S4", isAccepted: true, transitions: [] } }] } }] }, { value: "S2", isAccepted: false, transitions: [] }, { value: "S3", isAccepted: false, transitions: [] }, { value: "S4", isAccepted: true, transitions: [] }]} />
+                          <GraphFromDFA id="g6" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S1", isAccepted: false, transitions: [] } }, { characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [{ characterMatched: "b", stateTo: { value: "S3", isAccepted: true, transitions: [] } }] } }, ] }]} />
                         </div>
                       </div>
                     </div>
@@ -99,9 +99,22 @@ export default function Home() {
                         </div>
                         <div className="card-body">
                           <p className="card-text">
-                            In this type of finite automaton, there is a concept of epsilon transitions which do not require to match a character to go through them. It is non-deterministic because one can consider being at the same time in multiple states connected by an epsilon transition
+                            In this type of finite automaton, there is a concept of epsilon transitions which do not require to match a character to go through them. It is non-deterministic because one can consider being at the same time in all states that can be travelled to from the current state via an epsilon transition.
                           </p>
-                          <GraphFromDFA isStatic={true} id="g6" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [] } }, { characterMatched: "a", stateTo: { value: "S3", isAccepted: false, transitions: [] } }] }, { value: "S2", isAccepted: false, transitions: [] }, { value: "S3", isAccepted: false, transitions: [] }]} />
+                          <GraphFromDFA id="g7" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "ε", stateTo: { value: "S2", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S1", isAccepted: false, transitions: [] } }] } }, { characterMatched: "ε", stateTo: { value: "S3", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S4", isAccepted: false, transitions:[{ characterMatched: "b", stateTo: { value: "S5", isAccepted: true, transitions: [] } }]}}] } }] }]} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-4">
+                      <div className="card">
+                        <div className="card-header">
+                          Deterministic Finite Automaton (DFA)
+                        </div>
+                        <div className="card-body">
+                          <p className="card-text">
+                            In this type of finite automaton, there is always at most one transition outgoing from each state for each character. 
+                          </p>
+                          <GraphFromDFA id="g8" states={[{ value: "S1", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [{ characterMatched: "a", stateTo: { value: "S2", isAccepted: false, transitions: [] } }, { characterMatched: "b", stateTo: { value: "S3", isAccepted: true, transitions: [] } }] } }, ] }]} />
                         </div>
                       </div>
                     </div>
