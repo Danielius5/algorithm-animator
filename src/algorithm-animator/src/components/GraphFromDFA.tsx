@@ -1,30 +1,33 @@
 import { State } from "../models/dfa"
-import mermaid from 'mermaid'
+import mermaid, { RenderResult } from 'mermaid'
 import { useEffect, useState } from "react"
 
 interface MermaidParams {
     graph: string
+    id: string
     isLarge?: boolean
+    noHeight?: boolean
 }
-mermaid.initialize({ startOnLoad: true})
 
-
-function Mermaid({graph, isLarge}: MermaidParams) {
-    const [loaded, setLoaded] = useState(false)
-  
+  function Mermaid({graph, isLarge, noHeight, id}: MermaidParams) {
+    // const [loaded, setLoaded] = useState(false)
+    const [render, setRender] = useState<undefined | RenderResult>(undefined);
     useEffect(() => {
-      mermaid.contentLoaded()
-      setLoaded(true)
+      const asyncChild = async () => {
+        const result = await mermaid.render(id, graph)
+        setRender(result)
+      }
+      asyncChild()
     }, [])
-  
-    return (
-  
-    <pre className={`mermaid ${!loaded ? "invisible" : ""} ${isLarge? "mermaid-large" : ""}`} style={{width: "100%"}}>
-      {graph}
-    </pre>
-  )
-  } 
 
+
+    if (render) {
+      return (
+
+        <pre className={`mermaid ${isLarge? "mermaid-large" : ""} ${noHeight? "no-height" : ""}`} style={{width: "100%"}} id={id} dangerouslySetInnerHTML={{__html: render.svg}}></pre>
+      )
+    }
+  } 
 
 function recursiveAppendGraph(graph: string[], state: State, visited: Set<string>, selectedStates: string[]) {
   if (visited.has(state.value)) {
@@ -77,8 +80,10 @@ interface GraphFromDFAParams {
   states: State[]
   selectedStates?: string[]
   isLarge?: boolean
+  noHeight?: boolean
+  id: string
 }
-export function GraphFromDFA({states, selectedStates, isLarge}:GraphFromDFAParams) {
+export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id}:GraphFromDFAParams) {
 
     const visited = new Set<string>();
     const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
@@ -90,7 +95,7 @@ export function GraphFromDFA({states, selectedStates, isLarge}:GraphFromDFAParam
     }
 
     return (
-      <Mermaid graph={graph.join("")} key={graph.join("").length} isLarge={isLarge}></Mermaid>
+      <Mermaid id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></Mermaid>
     )
 }
 

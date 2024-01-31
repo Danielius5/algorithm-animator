@@ -204,7 +204,7 @@ export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFA
     return (
         <>
             {/* <input type="button" onClick={() => setCurrentStep(Math.min(currentStep + 1, steps.length))}  value="Next" /> */}
-            <GraphFromDFA states={states} />
+            <GraphFromDFA key="g-enfa-from-regex" id="g-enfa-from-regex" states={states} />
         </>
     )
 }

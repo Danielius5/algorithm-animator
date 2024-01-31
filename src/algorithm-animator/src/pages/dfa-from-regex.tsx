@@ -46,7 +46,7 @@ export default function DFAFromRegex() {
     const [statesDFA, setStatesDFA] = useState<State[]>([])
 
 
-    const [visibleENFA, setVisibleENFA] = useState<boolean>(false);
+    const [visibleENFA, setVisibleENFA] = useState<boolean>(true);
     const [visibleENFATransitionTable, setVisibleENFATransitionTable] = useState<boolean>(false);
     const [visibleDFATransitionTable, setVisibleDFATransitionTable] = useState<boolean>(false);
 
@@ -76,6 +76,10 @@ export default function DFAFromRegex() {
         setStatesDFA([])
         setSubmit(false)
     }
+
+    function removeWhitespace(regex: string) {
+        return regex.replace(/\s/g, '')
+    }
     return (
         <>
         <MainNavbar />
@@ -96,7 +100,7 @@ export default function DFAFromRegex() {
                         </h2>
                         <Collapse in={visibleENFA}>
                             <div id="collapse-enfa">
-                                <ENFABuildAnimator regex={regex} states={statesNFA} setStates={setStatesNFA} NFAComplete={NFAComplete} setNFAComplete={setNFAComplete} />
+                                <ENFABuildAnimator regex={removeWhitespace(regex)} states={statesNFA} setStates={setStatesNFA} NFAComplete={NFAComplete} setNFAComplete={setNFAComplete} />
                             </div>
                         </Collapse>
                         {NFAComplete && (
@@ -137,7 +141,7 @@ export default function DFAFromRegex() {
                                                 <DFAFromTransitionTable DFATransitionTable={DFATransitionTableData} NFATransitionTable={NFATransitionTableData} language={language} setStates={setStatesDFA} states={statesDFA} nfaStates={statesNFA}/>
                                             </>
                                         )}
-                                        <input type="button" onClick={() => setAnimate(true)} value = "animate" id="animate-dfa-from-regex-button" />
+                                        <input type="button" onClick={() => setAnimate(true)} value = "Animate" id="animate-dfa-from-regex-button" />
                                     </>
                                 )}
                             </>

@@ -11,6 +11,7 @@ interface GraphAnimatorParams {
     setCurrentLetter: Dispatch<SetStateAction<number>>
     setCurrentState: Dispatch<SetStateAction<AnimationState>>
     setCurrentStep: Dispatch<SetStateAction<number>>
+    id?: string
   }
 
 function recursiveBuildSteps(state: State, text: string, steps: Step[]) {
@@ -44,7 +45,7 @@ function setActiveStep(state: State, step: Step, visited: Set<Step>) {
         setActiveStep(transition.stateTo, step, visited)
     }
 }
-export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, currentLetter, currentStep, setCurrentStep}:GraphAnimatorParams) {
+export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, currentLetter, currentStep, setCurrentStep, id}:GraphAnimatorParams) {
     
     const [goForward, setGoForward] = useState<boolean | undefined >(undefined);
     let steps: Step[] = []
@@ -87,7 +88,7 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
 
     return (
         <div>
-            <GraphFromDFA states={states} />
+            <GraphFromDFA id={id ||"g-animator"} states={states} />
             <input type="button" onClick={() => {setCurrentStep(Math.min(currentStep + 1, steps.length - 1)); setGoForward(true)}}  value="Next" id="animate-button-next" />
             <input type="button" onClick={() => {setCurrentStep(Math.max(currentStep - 1, 0)); setGoForward(false)}}  value="Back" id="animate-button-back" />
 

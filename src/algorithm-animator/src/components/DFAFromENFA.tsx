@@ -95,7 +95,7 @@ export default function DFAFromENFA({statesNFA, setAnimate, statesDFA, setStates
                             <DFAFromTransitionTable DFATransitionTable={DFATransitionTableData} NFATransitionTable={NFATransitionTableData} language={language} setStates={setStatesDFA} states={statesDFA} nfaStates={statesNFA}/>
                         </>
                     )}
-                    <input type="button" onClick={() => setAnimate(true)} value = "animate" id="animate-dfa-from-regex-button" />
+                    <input type="button" onClick={() => setAnimate(true)} value = "Animate" id="animate-dfa-from-regex-button" />
                 </>
             )}
         </>
