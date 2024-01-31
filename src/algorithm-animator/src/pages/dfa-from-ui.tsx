@@ -332,16 +332,16 @@ export default function DFAFromUI() {
                                 <div>
                                     <h4>Finalise:</h4>
                                     {isValidDFA == undefined ? (
-                                        <input className="btn btn-primary btn-sm" id="check-if-dfa-button" type="button" onClick={() => {setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states)); setIsReadOnly(true);}} value="Check if valid DFA" />
+                                        <input disabled={dfaBuilder.current.states.length == 0} className="btn btn-primary btn-sm" id="check-if-dfa-button" type="button" onClick={() => {setIsValidDFA(checkIfValidDFA(dfaBuilder.current.states)); setIsReadOnly(true);}} value="Check if this is a DFA" />
                                     ) : (isValidDFA ? (
                                         <>
-                                            Type: Deterministic <br />
+                                            This is a DFA and can be animated <br />
                                             <input className="btn btn-primary btn-sm" type="button" onClick={() => setAnimate(true)} value="Animate" />
                                         </>
 
                                     ) : (
                                         <>
-                                            Type: Non-deterministic <br />
+                                            This is a NFA and it needs to be converted to ∈-NFA and then to DFA to be animated  <br />
                                             {showButtonNFAToENFA ? (
                                                 <input className="btn btn-primary btn-sm" id="change-to-e-nfa-button" type="button" onClick={() => { NFAToEpsilonNFA(); setShowButtonNFAToENFA(false) }} value="Change to ∈-NFA" />
                                             ) : (

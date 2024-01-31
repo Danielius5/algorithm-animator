@@ -51,7 +51,7 @@ export function Trace({text, current, state} : TraceParams) {
     return (
         <>
             <h3>
-                Text:
+                Sequence:
                 {letters.map(([letter, isCurrent], i) => <span className={isCurrent ? "current-letter" : ""} key={letter + isCurrent + i}>{letter}</span>
                 )}
             </h3>

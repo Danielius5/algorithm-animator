@@ -98,3 +98,4 @@
 * *1.5 hours* Work on documentation, small improvements
 * *2.5 hours* (again) Fixing issues of multiple graphs interfering with ach other 
 * *1.0 hour* Improve documentation, fix interference between animators
+* *0.5 hour* Fix bugs that allows animating empty DFA and empty sequence, add further enhancements

@@ -23,7 +23,8 @@ export function Animate({states, sequence, id}:AnimateParams) {
     // key={text} needed so we recreate graph animator on change to text
     return (
         <>
-            <input disabled={sequence !== undefined} onChange={(e) => {setText(e.target.value);  setCurrentStep(0);setCurrentLetter(0.5);}} value={text} id="user-input-text-for-dfa"/>
+            <label htmlFor={"user-input-text-for-dfa" + (id  ?? "-g-animator")}>Sequence to match:</label> <br/>
+            <input disabled={sequence !== undefined} onChange={(e) => {setText(e.target.value);  setCurrentStep(0);setCurrentLetter(0.5);}} value={text} id={"user-input-text-for-dfa" + (id  ?? "-g-animator")} />
             <br/>
             <Trace text={text} current={Math.floor(currentLetter)} log={[]} state={currentState}/>
             <GraphAnimator id={id} states={states} text={text} currentLetter={currentLetter} setCurrentLetter={setCurrentLetter} setCurrentState={setCurrentState} setCurrentStep={setCurrentStep} currentStep={currentStep} key={text}/>
