@@ -87,7 +87,7 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
 
     return (
         <div>
-            <GraphFromDFA states={states} />
+            <GraphFromDFA id="g-animator" states={states} />
             <input type="button" onClick={() => {setCurrentStep(Math.min(currentStep + 1, steps.length - 1)); setGoForward(true)}}  value="Next" id="animate-button-next" />
             <input type="button" onClick={() => {setCurrentStep(Math.max(currentStep - 1, 0)); setGoForward(false)}}  value="Back" id="animate-button-back" />
 

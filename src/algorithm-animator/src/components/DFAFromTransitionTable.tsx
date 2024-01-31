@@ -105,6 +105,7 @@ export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitio
     if (DFATransitionTable[1] === undefined) {
         return
     }
+    console.log("redner dfa")
     useEffect(() => {
         if (states.length == 0) {
             const language = langWithEpsillon.filter((c) => c!= EMPTY)
@@ -121,7 +122,7 @@ export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitio
     });
     return (
         <>
-            <GraphFromDFA states={states} />
+            <GraphFromDFA id="g-dfa-from-dfa" states={states} />
         </>
     )
 }

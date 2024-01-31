@@ -184,6 +184,7 @@ export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFA
     const s: Steps = []
     getSteps(regex, s, true)
     const [steps, ] = useState<Steps>(s)
+    console.log("redner enfa")
     useEffect(() => {
         const dfaBuilder = new DFABuilder()
         dfaBuilder.addState(false)
@@ -204,7 +205,7 @@ export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFA
     return (
         <>
             {/* <input type="button" onClick={() => setCurrentStep(Math.min(currentStep + 1, steps.length))}  value="Next" /> */}
-            <GraphFromDFA states={states} />
+            <GraphFromDFA isStatic id="g-enfa-from-regex" states={states} />
         </>
     )
 }

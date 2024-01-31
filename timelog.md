@@ -84,9 +84,15 @@
 ## 12 Dec 2023
 * *4 hours* Allow NFA -> ∈-NFA conversion from user input
 
-## 23 Dec 2023
+## 23 Jan 2023
 * *3.5 hours* Experimenting / Improving UI 
 
-## 25 Dec 2023
+## 25 Jan 2023
 * *4 hours* Further improving UI / wrestling with routing...
 * *1 hour* Reduce number of state refreshes, improve animation
+
+## 30 Jan 2023
+* *4.0 hours* Fix interference between multiple graphs, fix whitespace causing issues
+
+## 31 Jan 2023
+* *1.5 hours* Work on documentation, small improvements
