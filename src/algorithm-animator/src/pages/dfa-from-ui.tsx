@@ -157,10 +157,10 @@ export default function DFAFromUI() {
         setEdges(edges.filter(([eFrom, eTo, eCharacterMatched]) => from != eFrom || to != eTo || characterMatched != eCharacterMatched))
     }
 
-    function deleteState(state: string) {
-        dfaBuilder.current.deleteState(state)
-        setStates((currentStates) => currentStates.filter((state) => state !== state))
-        setEdges((edges) => edges.filter(([from, to, _]) => from !== state && to !== state))
+    function deleteState(stateToDelete: string) {
+        dfaBuilder.current.deleteState(stateToDelete)
+        setStates((currentStates) => currentStates.filter((state) => state !== stateToDelete))
+        setEdges((edges) => edges.filter(([from, to, _]) => from !== stateToDelete && to !== stateToDelete))
     }
     const sortEdges = (a:[string,string,string], b: [string,string,string]) => {
         const [from1, to1, char1] = a;

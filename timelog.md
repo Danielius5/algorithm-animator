@@ -84,18 +84,21 @@
 ## 12 Dec 2023
 * *4 hours* Allow NFA -> ∈-NFA conversion from user input
 
-## 23 Jan 2023
+## 23 Jan 2024
 * *3.5 hours* Experimenting / Improving UI 
 
-## 25 Jan 2023
+## 25 Jan 2024
 * *4 hours* Further improving UI / wrestling with routing...
 * *1 hour* Reduce number of state refreshes, improve animation
 
-## 30 Jan 2023
+## 30 Jan 2024
 * *4.0 hours* Fix interference between multiple graphs, fix whitespace causing issues
 
-## 31 Jan 2023
+## 31 Jan 2024
 * *1.5 hours* Work on documentation, small improvements
 * *2.5 hours* (again) Fixing issues of multiple graphs interfering with ach other 
 * *1.0 hour* Improve documentation, fix interference between animators
 * *0.5 hour* Fix bugs that allows animating empty DFA and empty sequence, add further enhancements
+
+## 03 Feb 2024
+* *0.5 hours* Fix bug of states not appearing in list for transition creation
