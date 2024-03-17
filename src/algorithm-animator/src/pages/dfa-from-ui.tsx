@@ -209,7 +209,7 @@ export default function DFAFromUI() {
             }
             const permutations: [string, string][][] = []
             getAllPermutations(Object.entries(transitionsByCharacter), 0, [], permutations)
-            console.log(permutations, transitionsByCharacter)
+
             if (permutations.length > 1) {
                 state.transitions = []
                 newEdges = newEdges.filter(([from, _, __]) => from !== state.value)
