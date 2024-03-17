@@ -1,9 +1,9 @@
 # Timelog
 
-* PROJECT NAME
-* YOUR NAME
-* STUDENT_ID
-* SUPERVISOR NAME
+* Finite State Automaton Animator
+* Danielius Sukys
+* 2475466s
+* Dr Gethin Norman
 
 ## Guidance
 
