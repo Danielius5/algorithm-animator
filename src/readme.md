@@ -1,41 +1,45 @@
-# Readme
+# Finite State Automaton Animator
+Finite State Automaton Animator is a tool created to help students visualise how deterministic finite automata (DFAs) work. This tool supports DFA creation from user interface or by typing in a regular expression made up of basic regular expressions involving Kleene star represented by "*", union represented by "|", and parentheses "()" to overwrite the default precedence. 
 
-Put a brief description of your code here. This should at least describe the file structure.
+The code inside "algorithm-animator" is structured as follows:
+
+* _cypress_ folder includes the core testing code. The app is mainly tested via end-to-end tests which are all found in here
+
+* _src/components_ folder contains the core non-page React components of the app. They encapsulate the user interface for creating and animating DFAs
+
+* _src/helpers_ contain helper code used by React components. These include a few useful functionalities such as creating DFA transition table as well as generating all possible permutations of states to convert NFA to ε-NFA
+
+* _src/models_ contains State and Transition object models and related interfaces
+
+* _src/pages_ contains React components that make up the main pages of the app - DFA from UI, DFA from RegEx and Home
+
 
 ## Build instructions
 
-**You must** include the instructions necessary to build and deploy this project successfully. If appropriate, also include 
-instructions to run automated tests. 
 
 ### Requirements
 
-List the all of the pre-requisites software required to set up your project (e.g. compilers, packages, libraries, OS, hardware)
-
-For example:
-
-* Python 3.7
-* Packages: listed in `requirements.txt` 
-* Tested on Windows 10
-
-or another example:
-
-* Requires Raspberry Pi 3 
-* a Linux host machine with the `arm-none-eabi` toolchain (at least version `x.xx`) installed
-* a working LuaJIT installation > 2.1.0
+[Node.js 18](https://nodejs.org/en/about/previous-releases) with `npm` (should be included with `Node.js`) are pre-requisites.
 
 ### Build steps
+To install dependencies (run once):
 
-List the steps required to build software. 
+* Run `npm install`
 
-Hopefully something simple like `pip install -e .` or `make` or `cd build; cmake ..`. In
-some cases you may have much more involved setup required.
+To run locally:
+
+* Run `npm run dev`
+* Navigate to [http://localhost:10051/algorithm-animator](http://localhost:10051/algorithm-animator)
 
 ### Test steps
 
-List steps needed to show your software works. This might be running a test suite, or just starting the program; but something that could be used to verify your code is working correctly.
+Core end-to-end tests:
 
-Examples:
+* To run core tests make sure to have dev version of the app running locally
+* Run `npx cypress run`
 
-* Run automated tests by running `pytest`
-* Start the software by running `bin/editor.exe` and opening the file `examples/example_01.bin`
+Additional unit tests:
+* Run `npm run test`
 
+### Deployment
+The deployment is done automatically on the merge of a pull request. The deployment only happens if all end-to-end tests pass and if production build is created successfully.

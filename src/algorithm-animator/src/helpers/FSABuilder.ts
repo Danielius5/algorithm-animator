@@ -1,13 +1,10 @@
 import { State } from "../models/dfa";
 
-export class DFABuilder {
+export class FSABuilder {
     stateValues: Set<string> 
     states: State[]
     highestState: number
-    // baseState: State
     constructor() {
-        // const baseStateName = "Start"
-        // this.baseState = {value:baseStateName, transitions: [], isAccepted: false, }
         this.stateValues = new Set([])
         this.highestState = 0;
 

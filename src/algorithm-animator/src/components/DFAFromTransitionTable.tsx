@@ -1,4 +1,4 @@
-import { DFABuilder } from "../helpers/dfa_builder";
+import { FSABuilder } from "../helpers/FSABuilder";
 import { EMPTY } from "./ENFABuildAnimator";
 import { GraphFromDFA } from "./GraphFromDFA";
 import { Dispatch, SetStateAction, useEffect } from "react";
@@ -13,7 +13,6 @@ interface DFAFromTransitionTableParams {
     language: string[]
 }
 
-//TODO: extract helpers
 // Taken from here and modified: https://stackoverflow.com/a/44827922
 function areSetsEqual(a:Set<unknown>, b:Set<unknown>) {
     return a.size === b.size && [...a].every(value => b.has(value));
@@ -46,7 +45,7 @@ function isStateFinal(states: Set<string>, finalStates: string[]) {
     })
     return result
 }
-function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], language: string[], finalStates: string[]) {
+function buildDFA(dfaBuilder: FSABuilder, DFATransitionTable: Set<string>[][], language: string[], finalStates: string[]) {
     const baseState = DFATransitionTable[1][0]
     const states: Set<string>[] = [baseState]
     const isFinalState: boolean[] = [isStateFinal(baseState, finalStates)]
@@ -55,11 +54,8 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
     let table = DFATransitionTable.slice(1)
     table = table.filter((row) => !isFailingState(row[0]))
 
-    // TODO: write about this
-    // eg: not reachable for aa* so not needed, but reachable for a|b
-
     let failingStateReachable = false
-    table.forEach((row, rowInd) => { //row[ind] = states[ind]
+    table.forEach((row, rowInd) => {
 
         row.forEach((cell, ind) => { 
             // skip states part, only need transitions
@@ -85,7 +81,6 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
     states.forEach((_, ind) => {
         dfaBuilder.addState(isFinalState[ind])
     })
-    // dfaBuilder.addEdge("Start", "S1", undefined)
 
     if (failingStateReachable) {
         dfaBuilder.addState(false)
@@ -99,7 +94,6 @@ function buildDFA(dfaBuilder: DFABuilder, DFATransitionTable: Set<string>[][], l
         dfaBuilder.addEdge(`S${fromInd}`, `S${toInd}`, char)
     })
 
-    // dfaBuilder.addEdge("START", "S1", EMPTY)
 }
 export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitionTable, setStates, states, nfaStates}: DFAFromTransitionTableParams) {
     if (DFATransitionTable[1] === undefined) {
@@ -109,7 +103,7 @@ export function DFAFromTransitionTable({language: langWithEpsillon, DFATransitio
     useEffect(() => {
         if (states.length == 0) {
             const language = langWithEpsillon.filter((c) => c!= EMPTY)
-            const dfaBuilder = new DFABuilder()
+            const dfaBuilder = new FSABuilder()
             const finalStates: string[] = []
             nfaStates.forEach((nfaState) => {
                 if (nfaState.isAccepted) {

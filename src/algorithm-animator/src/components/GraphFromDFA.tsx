@@ -10,7 +10,6 @@ interface MermaidParams {
 }
 
   function Mermaid({graph, isLarge, noHeight, id}: MermaidParams) {
-    // const [loaded, setLoaded] = useState(false)
     const [render, setRender] = useState<undefined | RenderResult>(undefined);
     useEffect(() => {
       const asyncChild = async () => {
@@ -98,31 +97,3 @@ export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id}:Gra
       <Mermaid id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></Mermaid>
     )
 }
-
-// interface TextThroughDFAParams {
-//   dfa: DFA
-//   text: string
-// }
-
-
-// function appendSteps(steps:Steps, transitions: Transition[], text: string) {
-//   if (text == "") {
-//     return;
-//   }
-
-//   const char = text[0];
-//   for(const transition of transitions) {
-//     if (transition.characterMatched == char) {
-//       steps.push(transition)
-//       steps.push(transition.stateTo)
-//       appendSteps(steps, transition.stateTo.transitions, text.substring(1))
-//       return;
-//     }
-//   }
-
-// }
-// export function TextThroughDFA({dfa, text}: TextThroughDFAParams) {
-  
-//   let steps: Steps = [];
-//   appendSteps(steps, [dfa.rootTransition], text)
-// }

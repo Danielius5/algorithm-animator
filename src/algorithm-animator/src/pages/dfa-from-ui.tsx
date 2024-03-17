@@ -3,7 +3,7 @@ import { Animate } from "../components/Animate";
 import { EMPTY } from "../components/ENFABuildAnimator";
 import { GraphFromDFA } from "../components/GraphFromDFA";
 import { MainNavbar } from "../components/Navbar";
-import { DFABuilder } from "../helpers/dfa_builder";
+import { FSABuilder } from "../helpers/FSABuilder";
 import { State } from "../models/dfa";
 import { getAllPermutations } from "../helpers/permutations";
 import DFAFromENFA from "../components/DFAFromENFA";
@@ -132,7 +132,7 @@ export default function DFAFromUI() {
 
     const [animate, setAnimate] = useState<boolean>(false)
 
-    const dfaBuilder = useRef<DFABuilder>(new DFABuilder())
+    const dfaBuilder = useRef<FSABuilder>(new FSABuilder())
 
     function cleanForm() {
         setCharToMatch("");
@@ -209,7 +209,7 @@ export default function DFAFromUI() {
             }
             const permutations: [string, string][][] = []
             getAllPermutations(Object.entries(transitionsByCharacter), 0, [], permutations)
-            console.log(permutations, transitionsByCharacter)
+
             if (permutations.length > 1) {
                 state.transitions = []
                 newEdges = newEdges.filter(([from, _, __]) => from !== state.value)
@@ -310,7 +310,7 @@ export default function DFAFromUI() {
                                             <div className="col-4 px-0">
                                                 <h4>States:</h4>
                                                 {dfaBuilder.current.states.map((state) => {
-                                                    return <div key={state.value} id={`state-${state.value}`}>{state.value} <button disabled={isReadOnly} className="btn btn-danger btn-xs" onClick={() => deleteState(state.value)} id={`${state}-state-delete-button`}>DEL</button></div>
+                                                    return <div key={state.value} id={`state-${state.value}`}>{state.value} <button disabled={isReadOnly} className="btn btn-danger btn-xs" onClick={() => deleteState(state.value)} id={`${state.value}-state-delete-button`}>DEL</button></div>
                                                 })}
                                             </div>
                                             <div className="col-8 px-0">

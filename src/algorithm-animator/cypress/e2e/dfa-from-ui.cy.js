@@ -1,9 +1,67 @@
 describe('Test DFA from UI', () => {
-    // TODO: allows creating an edge?
-    // TODO: allows creating non-accepting state
-    // TODO: allows creating accepting state
-    // TODO: allows deleting state
-    // TODO: allows animating
+    it('Allows creating non-accepting and accepting states', () => {
+        cy.visit('/#/dfa-from-ui');
+
+        cy.get('#add-state-button').click();
+
+        cy.get('#is-accepting-select').check();
+        cy.get('#add-state-button').click();
+
+        cy.get('.node').should('have.length', 3) // includes START node
+        cy.get('.finalState').should('have.length', 1)
+    })
+
+    it('Allows deleting state', () => {
+        cy.visit('/#/dfa-from-ui');
+
+        cy.get('#add-state-button').click();
+        cy.get('#add-state-button').click();
+        cy.get('#add-state-button').click();
+
+        cy.get('.node').should('have.length', 4) // includes START node
+
+        cy.get("#S1-state-delete-button").click()
+
+        cy.get('.node').should('have.length', 3) // includes START node
+    })
+
+    it('Deletes all edges when deleting a state', () => {
+        cy.visit('/#/dfa-from-ui')
+
+        cy.get('#add-state-button').click();
+        cy.get('#add-state-button').click();
+
+        // set up edge S1 -> S2
+        cy.get('#select-state-from').select("S1")
+        cy.get('#select-state-to').select("S2")
+        cy.get('#input-character-matched').type("a")
+        cy.get('#add-edge-button').click()
+
+        // set up edge S2 -> S1
+        cy.get('#select-state-from').select("S2")
+        cy.get('#select-state-to').select("S1")
+        cy.get('#input-character-matched').type("b")
+        cy.get('#add-edge-button').click()
+
+        // set up edge S2 -> S2
+        cy.get('#select-state-from').select("S2")
+        cy.get('#select-state-to').select("S2")
+        cy.get('#input-character-matched').type("c")
+        cy.get('#add-edge-button').click()
+
+        // set up edge S1 -> S1
+        cy.get('#select-state-from').select("S1")
+        cy.get('#select-state-to').select("S1")
+        cy.get('#input-character-matched').type("d")
+        cy.get('#add-edge-button').click()
+
+        cy.get('.edgePaths path').should('have.length', 5) // includes transitions from START node
+
+        cy.get("#S1-state-delete-button").click()
+
+        cy.get('.edgePaths path').should('have.length', 2) // only self loop on S2 should remain
+    })
+    
     it('Checks that two edges between same states get merged into one', () => {
         cy.visit('/#/dfa-from-ui')
 
@@ -124,10 +182,6 @@ describe('Test DFA from UI', () => {
         cy.get('.node').should('have.length', 11) //check ∈-NFA was built so states added
 
         cy.get("#build-from-e-nfa-button").click()
-
-        // cy.get('#animate-dfa-from-regex-button').click()
-
-        // cy.get("#user-input-text-for-dfa").type("text")
 
     })
 })

@@ -69,7 +69,6 @@ export function GraphAnimator({states, text, setCurrentLetter, setCurrentState, 
                 setCurrentState(AnimationState.ACCEPTED)
             }
             else {setCurrentState(AnimationState.REJECTED)}
-            // if (typeof finalStep === "State")
         }
         else {
             setCurrentState(AnimationState.IN_PROGRESS)
