@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { DFABuilder } from "../helpers/dfa_builder";
+import { FSABuilder } from "../helpers/FSABuilder";
 import { State } from "../models/dfa";
 import { GraphFromDFA } from "./GraphFromDFA";
 
@@ -11,16 +11,15 @@ interface DFABuildAnimatorParams {
     NFAComplete: boolean;
     setNFAComplete: Dispatch<SetStateAction<boolean>>
 }
-type Step = (dfaBuilder: DFABuilder, parent: string, a: (Steps | string), b: (Steps | string)) => string
+type Step = (dfaBuilder: FSABuilder, parent: string, a: (Steps | string), b: (Steps | string)) => string
 type Steps = [Step, Steps | string, Steps | string][];
 
-function addFinish(dfaBuilder: DFABuilder, parent: string, _: Steps | string, __: Steps | string) {
+function addFinish(dfaBuilder: FSABuilder, parent: string, _: Steps | string, __: Steps | string) {
     const state = dfaBuilder.addState(true)
     dfaBuilder.addEdge(parent, state, EMPTY)
     return state
 }
-function addConcat(dfaBuilder: DFABuilder, parent: string,  a: Steps | string, _: Steps | string) {
-    // const state = dfaBuilder.addState(false)
+function addConcat(dfaBuilder: FSABuilder, parent: string,  a: Steps | string, _: Steps | string) {
     if (typeof a === "string") {
         const state = dfaBuilder.addState(false);
         dfaBuilder.addEdge(parent, state, a);
@@ -28,12 +27,11 @@ function addConcat(dfaBuilder: DFABuilder, parent: string,  a: Steps | string, _
     }
     else {
         const state = addA(dfaBuilder, parent, a, _)
-        // dfaBuilder.addEdge(parent, state, charMatched)
         return state;
     }
 }
 
-function addA(dfaBuilder: DFABuilder, parent: string, a:Steps | string, _: Steps | string) {
+function addA(dfaBuilder: FSABuilder, parent: string, a:Steps | string, _: Steps | string) {
     let p = parent;
     for (const [step, aSub, bSub] of a) {
         //@ts-expect-error For some reason typescript assumes its an array of Step | string | Steps instead of tuple of Step, Steps | string, Steps | string
@@ -42,7 +40,7 @@ function addA(dfaBuilder: DFABuilder, parent: string, a:Steps | string, _: Steps
     return p;
 }
 
-function addStar(dfaBuilder: DFABuilder, parent: string, a:Steps | string, _: Steps | string) {
+function addStar(dfaBuilder: FSABuilder, parent: string, a:Steps | string, _: Steps | string) {
     if (typeof a === "string") {
         throw new Error("Error");
     }
@@ -56,16 +54,14 @@ function addStar(dfaBuilder: DFABuilder, parent: string, a:Steps | string, _: St
     return state3;
 }
 
-function addOr(dfaBuilder: DFABuilder, parent: string, a:Steps | string, b: Steps | string) {
+function addOr(dfaBuilder: FSABuilder, parent: string, a:Steps | string, b: Steps | string) {
     const state1 = dfaBuilder.addState(false)
     const state2 = dfaBuilder.addState(false)
     const state3 = addA(dfaBuilder, state1, a, [])
     const state4 = addA(dfaBuilder, state2, b, [])
     const state5 = dfaBuilder.addState(false)
-    dfaBuilder.addEdge(parent, state1, EMPTY) // do i need this?
-    dfaBuilder.addEdge(parent, state2, EMPTY) // do i need this?
-    // dfaBuilder.addEdge(state1, state3, charMatched)
-    // dfaBuilder.addEdge(state2, state4, charMatched2)
+    dfaBuilder.addEdge(parent, state1, EMPTY)
+    dfaBuilder.addEdge(parent, state2, EMPTY)
     dfaBuilder.addEdge(state3, state5, EMPTY)
     dfaBuilder.addEdge(state4, state5, EMPTY)
     return state5;
@@ -149,50 +145,15 @@ function getSteps(regex:string, steps:  Steps, createFinal:boolean) {
         steps.push([addFinish, regex[len - 1], ""])
     }
 }
-// function traverseSteps(step: Step, parent: string, a:Steps | string, b: Steps | string){
-//     let steps: Steps = []
-//     let lastA: Step | undefined = undefined;
-//     let lastB: Step | undefined = undefined;
-//     if (typeof a !== "string") {
-//         for (const [step, aSub, bSub] of a) {
-//             const res = traverseSteps(step, aSub, bSub);
-//             // safe to ignore as recursion must have final element as string
-//             //@ts-ignore
-//             lastA = res[res.length - 1][1]
-//             steps.push(...res.slice(0, -1))
-//         }
-//     } else {
-//         const st: Step = [addConcat, a, b]; 
-//         lastA = [addConcat, a, b];
-//     }
-//     if (typeof b !== "string") {
-//         for (const [step, aSub, bSub] of b) {
-//             const res = traverseSteps(step, aSub, bSub);
-//             // safe to ignore as recursion must have final element as string
-//             //@ts-ignore
-//             lastB = res[res.length - 1][2]
-//             steps.push(...res.slice(0, -1))
-//         }
-//     } else {
-//         lastB = b;
-//     }
-//     //@ts-ignore
-//     steps.push([step, lastA, lastB])
-//     return steps
-// }
+
 export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFABuildAnimatorParams) {
     const s: Steps = []
     getSteps(regex, s, true)
     const [steps, ] = useState<Steps>(s)
     useEffect(() => {
-        const dfaBuilder = new DFABuilder()
+        const dfaBuilder = new FSABuilder()
         dfaBuilder.addState(false)
-        // dfaBuilder.addEdge("Start", "S1", undefined)
         let parent = "S1"
-        // const s: Steps = []
-        // for(const [step, aSub, bSub] of stepsUntilCurrent) {
-        //     s.push(...traverseSteps(step, aSub, bSub))
-        // }
         for(const [func, char, char2] of steps) {
             const newParent = func(dfaBuilder, parent, char, char2)
             parent = newParent
@@ -203,7 +164,6 @@ export function ENFABuildAnimator({regex, states, setStates, setNFAComplete}:DFA
     
     return (
         <>
-            {/* <input type="button" onClick={() => setCurrentStep(Math.min(currentStep + 1, steps.length))}  value="Next" /> */}
             <GraphFromDFA key="g-enfa-from-regex" id="g-enfa-from-regex" states={states} />
         </>
     )

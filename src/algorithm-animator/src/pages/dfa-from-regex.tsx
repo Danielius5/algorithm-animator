@@ -38,9 +38,6 @@ export default function DFAFromRegex() {
     const [statesNFA, setStatesNFA] = useState<State[]>([])
     const [NFAComplete, setNFAComplete] = useState<boolean>(false)
 
-    // const [statesDFA, setStatesDFA] = useState<State[]>([])
-    // const [DFAComplete, setDFAComplete] = useState<boolean>(false)
-
     const [animate, setAnimate] = useState<boolean>(false)
 
     const [statesDFA, setStatesDFA] = useState<State[]>([])

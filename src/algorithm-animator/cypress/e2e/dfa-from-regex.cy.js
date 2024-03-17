@@ -49,8 +49,6 @@ describe('Test DFA from RegEx', () => {
                 cy.get("#user-input-text-for-dfa-g-animator").clear()
                 cy.get("#user-input-text-for-dfa-g-animator").type(text)
                 
-                // FIXME a bit of a hack as if the text is immediately rejected e.g. if regex is a|b and text is c
-                // then in progress never appears
                 if (isAccepted) { 
                     cy.contains('In Progress')
                 }
