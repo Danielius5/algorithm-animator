@@ -21,6 +21,7 @@ The code inside "algorithm-animator" is structured as follows:
 
 [Node.js 18](https://nodejs.org/en/about/previous-releases) with `npm` (should be included with `Node.js`) are pre-requisites.
 
+All of the commands **must** be run from a terminal at `src/algorithm-animator`
 ### Build steps
 To install dependencies (run once):
 
@@ -35,7 +36,7 @@ To run locally:
 
 Core end-to-end tests:
 
-* To run core tests make sure to have dev version of the app running locally
+* To run core tests make sure to have dev version of the app running locally in a separate terminal
 * Run `npx cypress run`
 
 Additional unit tests:
