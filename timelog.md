@@ -105,3 +105,7 @@
 
 ## 17 Mar 2024
 * *1.5 hours* Cleanup, README writing
+
+## 21 Mar 2024
+* *0.5 hours* Cleanup
+* *0.5 hours* Cleanup
