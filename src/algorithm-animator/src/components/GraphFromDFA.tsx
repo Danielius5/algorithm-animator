@@ -10,7 +10,7 @@ interface MermaidParams {
 }
 
   function Mermaid({graph, isLarge, noHeight, id}: MermaidParams) {
-    const [render, setRender] = useState<undefined | RenderResult>(undefined);
+    const [render, setRender] = useState<null | RenderResult>(null);
     useEffect(() => {
       const asyncChild = async () => {
         const result = await mermaid.render(id, graph)
@@ -19,11 +19,9 @@ interface MermaidParams {
       asyncChild()
     }, [])
 
-
     if (render) {
       return (
-
-        <pre className={`mermaid ${isLarge? "mermaid-large" : ""} ${noHeight? "no-height" : ""}`} style={{width: "100%"}} id={id} dangerouslySetInnerHTML={{__html: render.svg}}></pre>
+        <pre className={`mm ${isLarge? "mm-large" : ""} ${noHeight? "no-height" : ""}`} id={id} dangerouslySetInnerHTML={{__html: render.svg}}></pre>
       )
     }
   } 
