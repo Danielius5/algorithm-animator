@@ -8,6 +8,8 @@ import { State } from "../models/dfa";
 import { getAllPermutations } from "../helpers/permutations";
 import DFAFromENFA from "../components/DFAFromENFA";
 
+const GRAPH_ID = "g-dfa-from-ui";
+
 // Idea of iterating over parent elements taken and modified from here: https://stackoverflow.com/a/8729274
 function getParentElements(element: HTMLElement) {
     let parent: HTMLElement | null = element;
@@ -37,7 +39,7 @@ export default function DFAFromUI() {
 
         const parents = getParentElements(element)
         const mermaidObj = findMermaidNodeObject(parents)
-        const isElementCanvas = element.classList.contains("mermaid") && element.nodeName === "PRE"
+        const isElementCanvas = element.classList.contains("mm") && element.nodeName === "PRE" || element.tagName=="svg" && element.id == GRAPH_ID
         if (isElementCanvas) {
             event.preventDefault();
             const state = dfaBuilder.current.addState(false)
@@ -328,7 +330,7 @@ export default function DFAFromUI() {
                             </div>
 
                             <div className="col-lg-9">
-                                <GraphFromDFA id="g-dfa-from-ui" isLarge={true} states={dfaBuilder.current.states} selectedStates={selectedStates} />
+                                <GraphFromDFA id={GRAPH_ID} isLarge={true} states={dfaBuilder.current.states} selectedStates={selectedStates} />
                                 <div>
                                     <h4>Finalise:</h4>
                                     {isValidDFA == undefined ? (

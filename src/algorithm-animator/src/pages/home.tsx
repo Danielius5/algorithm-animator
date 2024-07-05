@@ -87,7 +87,7 @@ export default function Home() {
                 Determinism and Non-Determinism
               </div>
               <div className="card-body">
-                <p className="card-text">
+                <div className="card-text">
                   There are three types of Finite Automata you will see in this web application. All of these are equivalent and recognise <strong>aa*b</strong>.
                   <div className="row">
                     <div className="col-lg-4 mt-3">
@@ -142,7 +142,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                </p>
+                </div>
               </div>
             </div>
           </div>

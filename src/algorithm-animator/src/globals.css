@@ -16,6 +16,10 @@ html, body {
     color:red;
 }
 
+/* weird issue on dev environment where <g></g> is rendered alongside svg showing error text */
+pre > g {
+    display:none
+}
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
@@ -32,13 +36,14 @@ table, th, td {
 .nodeLabel {
     user-select: none!important;
 }
-
-.mermaid {
+/* using mermaid class seems to cause errors sometimes... */
+.mm{
     border: 1px solid black;
-    min-height: 100px;
+    min-height: 100;
+    width: 100% !important;
 }
 
-.mermaid-large {
+.mm-large{
     min-height:300px;
 }
 
