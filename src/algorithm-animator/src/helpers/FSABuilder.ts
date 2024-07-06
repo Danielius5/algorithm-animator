@@ -17,6 +17,12 @@ export class FSABuilder {
         this.states.push({value: value, isAccepted: isAccepted, transitions: []})
         return value
     }
+    switchType(name: string) {
+        const stateIndex = this.states.findIndex((s) => s.value == name);
+        if (stateIndex > -1) {
+            this.states[stateIndex].isAccepted = !this.states[stateIndex].isAccepted;
+        }
+    }
 
     addEdge(from: string, to: string, characterMatched: string | undefined) {
         if (!characterMatched) {

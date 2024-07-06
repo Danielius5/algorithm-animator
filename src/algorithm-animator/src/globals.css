@@ -42,7 +42,12 @@ table, th, td {
     min-height: 100;
     width: 100% !important;
 }
-
+g:hover, path:hover {
+    cursor:pointer;
+}
+path {
+    height: 50px;
+}
 .mm-large{
     min-height:300px;
 }
