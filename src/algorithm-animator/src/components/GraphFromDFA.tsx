@@ -79,8 +79,10 @@ interface GraphFromDFAParams {
   isLarge?: boolean
   noHeight?: boolean
   id: string
+  showControlButtons?: boolean
+  newState?: () => void
 }
-export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id}:GraphFromDFAParams) {
+export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id, showControlButtons, newState}:GraphFromDFAParams) {
 
     const visited = new Set<string>();
     const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
@@ -92,6 +94,25 @@ export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id}:Gra
     }
 
     return (
-      <Mermaid id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></Mermaid>
+      <>
+        {showControlButtons && newState && (
+          <div className="row">
+            <div className="col-4 p-1">
+              <button className="btn form-control btn-primary btn-lg rounded-0" onClick={newState}>New state</button>
+            </div>
+            <div className="col-4 p-1">
+              <button className="btn form-control btn-danger btn-lg rounded-0">Delete...</button>
+            </div>
+            <div className="col-4 p-1">
+              <button className="btn form-control btn-success btn-lg rounded-0">Finalise</button>
+            </div>
+          </div>
+        )}
+        <div className="row">
+          <div className="col-12 mt-2">
+            <Mermaid id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></Mermaid>
+          </div>
+        </div>
+      </>
     )
 }
