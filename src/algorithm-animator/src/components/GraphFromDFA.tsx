@@ -7,9 +7,10 @@ interface MermaidParams {
     id: string
     isLarge?: boolean
     noHeight?: boolean
+    deleteMode?: boolean
 }
 
-  function Mermaid({graph, isLarge, noHeight, id}: MermaidParams) {
+  function Mermaid({graph, isLarge, noHeight, id, deleteMode}: MermaidParams) {
     const [render, setRender] = useState<null | RenderResult>(null);
     useEffect(() => {
       const asyncChild = async () => {
@@ -21,7 +22,7 @@ interface MermaidParams {
 
     if (render) {
       return (
-        <pre className={`mm ${isLarge? "mm-large" : ""} ${noHeight? "no-height" : ""}`} id={id} dangerouslySetInnerHTML={{__html: render.svg}}></pre>
+        <pre className={`mm ${isLarge? "mm-large" : ""} ${noHeight? "no-height" : ""} ${deleteMode ? "deleteMode" : ""}`} id={id} dangerouslySetInnerHTML={{__html: render.svg}}></pre>
       )
     }
   } 
@@ -69,8 +70,6 @@ function recursiveAppendGraph(graph: string[], state: State, visited: Set<string
     
     }
   })
-
-
 }
 
 interface GraphFromDFAParams {
@@ -81,8 +80,11 @@ interface GraphFromDFAParams {
   id: string
   showControlButtons?: boolean
   newState?: () => void
+  turnOnDeleteMode?: () => void
+  turnOffDeleteMode?: () => void
+  deleteMode?: boolean
 }
-export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id, showControlButtons, newState}:GraphFromDFAParams) {
+export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id, showControlButtons, newState, turnOnDeleteMode, deleteMode, turnOffDeleteMode}:GraphFromDFAParams) {
 
     const visited = new Set<string>();
     const graph = ["flowchart LR\n classDef finalState font-weight:bold,stroke-width:3px \n classDef currentState fill:#f00"];
@@ -95,22 +97,30 @@ export function GraphFromDFA({states, selectedStates, isLarge, noHeight, id, sho
 
     return (
       <>
-        {showControlButtons && newState && (
+        {showControlButtons &&  (
           <div className="row">
-            <div className="col-4 p-1">
-              <button className="btn form-control btn-primary btn-lg rounded-0" onClick={newState}>New state</button>
-            </div>
-            <div className="col-4 p-1">
-              <button className="btn form-control btn-danger btn-lg rounded-0">Delete...</button>
-            </div>
-            <div className="col-4 p-1">
-              <button className="btn form-control btn-success btn-lg rounded-0">Finalise</button>
-            </div>
+            {!deleteMode ? (
+              <>
+                <div className="col-4 p-1">
+                  <button className="btn w-100 btn-primary btn-lg rounded-0" onClick={newState}>New state</button>
+                </div>
+                <div className="col-4 p-1">
+                  <button className="btn w-100 btn-danger btn-lg rounded-0" onClick={turnOnDeleteMode}>Delete...</button>
+                </div>
+                <div className="col-4 p-1">
+                  <button className="btn w-100 btn-success btn-lg rounded-0">Finalise</button>
+                </div>
+              </>
+            ): (
+              <div className="col-12 p-1">
+                <button className="btn w-100 btn-danger btn-lg rounded-0" onClick={turnOffDeleteMode}>Turn off Delete Mode</button>
+              </div>
+            )}
           </div>
         )}
         <div className="row">
           <div className="col-12 mt-2">
-            <Mermaid id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></Mermaid>
+            <Mermaid deleteMode={deleteMode} id={id} graph={graph.join("")} key={graph.join("").length} isLarge={isLarge} noHeight={noHeight}></Mermaid>
           </div>
         </div>
       </>

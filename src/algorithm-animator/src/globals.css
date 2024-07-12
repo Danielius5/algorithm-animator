@@ -45,9 +45,18 @@ table, th, td {
 g:hover, path:hover {
     cursor:pointer;
 }
-path {
-    height: 50px;
+
+/* .deleteMode path {
+    stroke: #ff0000!important;
+} */
+.deleteMode rect {
+    fill: #ff0000!important;
+    stroke: #ff0000!important;
 }
+.deleteMode .edgeLabel {
+    background-color: #ff0000!important;
+}
+
 .mm-large{
     min-height:300px;
 }
