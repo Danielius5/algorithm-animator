@@ -29,21 +29,25 @@ function findMermaidNodeObject(elements: HTMLElement[]) {
 function extractStateFromElementId(id: string) {
     return id.match(/S[0-9]+/)![0]
 }
+
+function getStateFromEvent(event: Event) {
+    const element = event.target as unknown as HTMLElement
+
+    const parents = getParentElements(element)
+    const mermaidObj = findMermaidNodeObject(parents)
+    const state = mermaidObj?.id.match(/S[0-9]+/)![0]
+
+    return { mermaidObj, state }
+}
+
 export default function DFAFromUI() {
     const [selectedStates, setSelectedStates] = useState<string[]>([])
+    const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
+
     const { handlers } = useLongPress({
         doOnLongPress: switchStateType,
-        doOnShortPress: joinStates
+        doOnShortPress: addEdgeBetweenStates
     })
-    function getStateFromEvent(event: Event) {
-        const element = event.target as unknown as HTMLElement
-
-        const parents = getParentElements(element)
-        const mermaidObj = findMermaidNodeObject(parents)
-        const state = mermaidObj?.id.match(/S[0-9]+/)![0]
-
-        return { mermaidObj, state }
-    }
 
     function switchStateType(event: Event) {
         const { state } = getStateFromEvent(event)
@@ -51,7 +55,7 @@ export default function DFAFromUI() {
         setStates((currentStates) => [...currentStates])
     }
 
-    function joinStates(event: Event) {
+    function addEdgeBetweenStates(event: Event) {
         event.preventDefault();
         const { mermaidObj } = getStateFromEvent(event)
         if (!mermaidObj) return
@@ -74,11 +78,11 @@ export default function DFAFromUI() {
             const stateToDelete = extractStateFromElementId(mermaidObj.id)
             deleteState(stateToDelete)
         }
-        else {
-            event.preventDefault();
-            const state = dfaBuilder.current.addState(true)
-            setStates((currentStates) => [...currentStates, state])
-        }
+        // else {
+        //     event.preventDefault();
+        //     const state = dfaBuilder.current.addState(true)
+        //     setStates((currentStates) => [...currentStates, state])
+        // }
     }
 
     useEffect(() => {
@@ -216,7 +220,17 @@ export default function DFAFromUI() {
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-lg-9">
-                                <GraphFromDFA id={GRAPH_ID} newState={addState} showControlButtons isLarge={true} states={dfaBuilder.current.states} selectedStates={selectedStates} />
+                                <GraphFromDFA
+                                    id={GRAPH_ID}
+                                    newState={addState}
+                                    showControlButtons 
+                                    isLarge={true} 
+                                    states={dfaBuilder.current.states} 
+                                    selectedStates={selectedStates} 
+                                    turnOnDeleteMode={() => setIsDeleteMode(true)}
+                                    turnOffDeleteMode={() => setIsDeleteMode(false)}
+                                    deleteMode={isDeleteMode}
+                                />
                                 <div>
                                     <h4 >Finalise:</h4>
                                     {isValidDFA == undefined ? (
