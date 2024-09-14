@@ -42,6 +42,20 @@ table, th, td {
     min-height: 100;
     width: 100% !important;
 }
+g:hover, path:hover {
+    cursor:pointer;
+}
+
+/* .deleteMode path {
+    stroke: #ff0000!important;
+} */
+.deleteMode rect {
+    fill: #ff0000!important;
+    stroke: #ff0000!important;
+}
+.deleteMode .edgeLabel {
+    background-color: #ff0000!important;
+}
 
 .mm-large{
     min-height:300px;
